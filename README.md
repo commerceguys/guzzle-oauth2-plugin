@@ -54,5 +54,5 @@ $client = new Client('https://mysite.com/api');
 $client->addSubscriber($oauth2Plugin);
 $request = $client->get('me');
 // $oauth2Plugin->getAccessToken() and $oauth2Plugin->getRefreshToken() can be
-// used to export the tokens so that they can be persisted for the next request.
+// used to export the tokens so that they can be persisted for next time.
 ```

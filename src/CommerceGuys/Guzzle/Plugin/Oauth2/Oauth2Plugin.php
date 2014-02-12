@@ -82,7 +82,7 @@ class Oauth2Plugin implements EventSubscriberInterface
             $newAccessToken = $this->acquireAccessToken();
             if ($newAccessToken) {
                 $newRequest = clone $event['request'];
-                $newRequest->setHeader('Authorization', 'Bearer ' . $accessToken['access_token']);
+                $newRequest->setHeader('Authorization', 'Bearer ' . $newAccessToken['access_token']);
                 $newRequest->setHeader('X-Guzzle-Retry', '1');
                 $event['response'] = $newRequest->send();
                 $event->stopPropagation();

@@ -100,7 +100,7 @@ class Oauth2Plugin implements EventSubscriberInterface
      */
     public function getAccessToken()
     {
-        if (isset($this->accessToken['expires']) && $this->accessToken['expires'] >= time()) {
+        if (isset($this->accessToken['expires']) && $this->accessToken['expires'] < time()) {
             // The access token has expired.
             $this->accessToken = null;
         }

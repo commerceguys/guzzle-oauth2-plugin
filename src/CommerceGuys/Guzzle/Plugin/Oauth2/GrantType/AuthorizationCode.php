@@ -24,7 +24,7 @@ class AuthorizationCode implements GrantTypeInterface
         $this->config = Collection::fromConfig($config, array(
             'client_secret' => '',
             'scope' => '',
-	    'redirect_uri' => '',
+	    	'redirect_uri' => '',
         ), array(
             'client_id', 'code',
         ));

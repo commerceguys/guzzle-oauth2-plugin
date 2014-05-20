@@ -24,6 +24,7 @@ class AuthorizationCode implements GrantTypeInterface
         $this->config = Collection::fromConfig($config, array(
             'client_secret' => '',
             'scope' => '',
+            'redirect_uri' => '',
         ), array(
             'client_id', 'code',
         ));
@@ -40,6 +41,9 @@ class AuthorizationCode implements GrantTypeInterface
         );
         if ($this->config['scope']) {
             $postBody['scope'] = $this->config['scope'];
+        }
+        if ($this->config['redirect_uri']) {
+            $postBody['redirect_uri'] = $this->config['redirect_uri'];
         }
         $request = $this->client->post(null, array(), $postBody);
         $request->setAuth($this->config['client_id'], $this->config['client_secret']);

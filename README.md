@@ -1,7 +1,17 @@
 guzzle-oauth2-plugin
 ====================
 
-Provides an OAuth2 plugin for [Guzzle](http://guzzlephp.org/) 5.x.
+Provides an OAuth2 plugin for [Guzzle](http://guzzlephp.org/).
+
+The `master` branch is intended for Guzzle 5:
+```json
+        "commerceguys/guzzle-oauth2-plugin": "dev-master"
+```
+
+Guzzle 3 compatibility continues in the [`1.0`](https://github.com/commerceguys/guzzle-oauth2-plugin/tree/1.0) branch:
+```json
+        "commerceguys/guzzle-oauth2-plugin": "~1.0"
+```
 
 ## Features
 

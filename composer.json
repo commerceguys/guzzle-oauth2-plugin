@@ -1,13 +1,13 @@
 {
     "name": "commerceguys/guzzle-oauth2-plugin",
-    "description": "An OAuth2 plugin for guzzle",
+    "description": "An OAuth2 plugin for Guzzle 5.x",
     "license": "MIT",
     "require": {
-        "guzzle/guzzle": ">=v3.0"
+        "guzzlehttp/guzzle": "~5.0"
     },
     "autoload": {
-        "psr-0": {
-            "CommerceGuys\\Guzzle": "src"
+        "psr-4": {
+            "CommerceGuys\\Guzzle\\Oauth2\\": "src"
         }
     },
     "authors": [
@@ -16,6 +16,9 @@
         },
         {
             "name": "Damien Tournoud"
+        },
+        {
+            "name": "Patrick Dawkins"
         }
     ]
 }

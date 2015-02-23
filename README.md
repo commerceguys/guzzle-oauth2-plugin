@@ -1,58 +1,51 @@
 guzzle-oauth2-plugin
 ====================
 
-Provides an OAuth2 plugin for [Guzzle](http://guzzlephp.org/).
+Provides an OAuth2 plugin for [Guzzle](http://guzzlephp.org/) 5.x.
 
-Features
---------
+## Features
 
 - Acquires access tokens via one of the supported grant types (code, client credentials,
   user credentials, refresh token). Or you can set an access token yourself.
 - Supports refresh tokens (stores them and uses them to get new access tokens).
 - Handles token expiration (acquires new tokens and retries failed requests).
 
-Ways to use it:
-
-Just set an access token and make a request.
+## Example
 ```php
-use Guzzle\Http\Client;
-use CommerceGuys\Guzzle\Plugin\Oauth2\Oauth2Plugin;
+use GuzzleHttp\Client;
+use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshToken;
+use CommerceGuys\Guzzle\Oauth2\GrantType\PasswordCredentials;
+use CommerceGuys\Guzzle\Oauth2\Oauth2Subscriber;
 
-$accessToken = array(
-  'access_token' => 'e72758a43e1646969f9f7bd7737d0cd637ed17ae',
-  'expires' => '1391617481', // Optional.
-);
-$oauth2Plugin = new Oauth2Plugin();
-$oauth2Plugin->setAccessToken($accessToken);
+$base_url = 'https://example.com';
 
-$client = new Client('https://mysite.com/api');
-$client->addSubscriber($oauth2Plugin);
-$request = $client->get('me');
-```
+$oauth2Client = new Client(['base_url' => $base_url]);
 
-Or use a grant type.
-Optionally, add a refresh token grant type, used to refresh expired access tokens.
-```php
-use Guzzle\Http\Client;
-use CommerceGuys\Guzzle\Plugin\Oauth2\Oauth2Plugin;
-use CommerceGuys\Guzzle\Plugin\Oauth2\GrantType\PasswordCredentials;
-use CommerceGuys\Guzzle\Plugin\Oauth2\GrantType\RefreshToken;
+$config = [
+    'username' => 'test@example.com',
+    'password' => 'test password',
+    'client_id' => 'test-client',
+    'scope' => 'administration',
+];
 
-$oauth2Client = new Client('https://mysite.com/oauth2/token');
-$config = array(
-    'username' => 'myusername',
-    'password' => 'mypassword',
-    'client_id' => 'myclient',
-    'client_secret' => 'mysecret',
-    'scope' => 'administration', // Optional.
-);
-$grantType = new PasswordCredentials($oauth2Client, $config);
-$refreshTokenGrantType = new RefreshToken($oauth2Client, $config);
-$oauth2Plugin = new Oauth2Plugin($grantType, $refreshTokenGrantType);
+$token = new PasswordCredentials($oauth2Client, $config);
+$refreshToken = new RefreshToken($oauth2Client, $config);
 
-$client = new Client('https://mysite.com/api');
-$client->addSubscriber($oauth2Plugin);
-$request = $client->get('me');
-// $oauth2Plugin->getAccessToken() and $oauth2Plugin->getRefreshToken() can be
-// used to export the tokens so that they can be persisted for next time.
+$oauth2 = new Oauth2Subscriber($token, $refreshToken);
+
+$client = new Client([
+    'defaults' => [
+        'auth' => 'oauth2',
+        'subscribers' => [$oauth2],
+    ],
+]);
+
+/** @var \GuzzleHttp\Message\Response */
+$response = $client->get('https://example.com/api/user/me');
+
+print_r($response->json());
+
+// Use $oauth2->getAccessToken(); to get a token that can be persisted for
+// subsequent requests.
+
 ```

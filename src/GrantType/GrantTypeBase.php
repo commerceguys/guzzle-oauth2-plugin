@@ -18,7 +18,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     protected $grantType = '';
 
     /** @var array */
-    protected $defaults = ['client_secret' => '', 'scope' => ''];
+    protected $defaults = ['client_secret' => '', 'scope' => '', 'access_token_url' => 'oauth/v2/token'];
 
     /** @var array */
     protected $required = ['client_id'];
@@ -41,7 +41,10 @@ abstract class GrantTypeBase implements GrantTypeInterface
         $body = $this->config->toArray();
         $body['grant_type'] = $this->grantType;
 
-        $response = $this->client->post('/oauth2/token', ['body' => $body]);
+        $access_token_url = $body['access_token_url'];
+        unset($body['access_token_url']);
+
+        $response = $this->client->post($access_token_url, ['body' => $body]);
         $data = $response->json();
 
         return new AccessToken($data['access_token'], $data['token_type'], $data);

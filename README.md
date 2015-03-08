@@ -3,6 +3,8 @@ guzzle-oauth2-plugin
 
 Provides an OAuth2 plugin for [Guzzle](http://guzzlephp.org/).
 
+[![Build Status](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin)
+
 The `master` branch is intended for Guzzle 5:
 ```json
         "commerceguys/guzzle-oauth2-plugin": "dev-master"

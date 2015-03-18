@@ -9,7 +9,14 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterface
 {
     protected $grantType = 'refresh_token';
-    protected $required = ['client_id', 'refresh_token'];
+
+    /**
+     * @inheritdoc
+     */
+    protected function getDefaults()
+    {
+        return parent::getDefaults() + ['refresh_token' => ''];
+    }
 
     /**
      * @param string $refreshToken

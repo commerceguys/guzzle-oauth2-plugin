@@ -17,12 +17,6 @@ abstract class GrantTypeBase implements GrantTypeInterface
     /** @var string */
     protected $grantType = '';
 
-    /** @var array */
-    protected $defaults = ['client_secret' => '', 'scope' => '', 'token_url' => 'oauth2/token'];
-
-    /** @var array */
-    protected $required = ['client_id'];
-
     /**
      * @param ClientInterface $client
      * @param array           $config
@@ -30,7 +24,27 @@ abstract class GrantTypeBase implements GrantTypeInterface
     public function __construct(ClientInterface $client, array $config = [])
     {
         $this->client = $client;
-        $this->config = Collection::fromConfig($config, $this->defaults, $this->required);
+        $this->config = Collection::fromConfig($config, $this->getDefaults(), $this->getRequired());
+    }
+
+    /**
+     * Get default configuration items.
+     *
+     * @return array
+     */
+    protected function getDefaults()
+    {
+        return ['client_secret' => '', 'scope' => '', 'token_url' => 'oauth2/token'];
+    }
+
+    /**
+     * Get required configuration items.
+     *
+     * @return string[]
+     */
+    protected function getRequired()
+    {
+        return ['client_id'];
     }
 
     /**

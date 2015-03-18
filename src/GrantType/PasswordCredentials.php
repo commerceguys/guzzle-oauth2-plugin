@@ -10,4 +10,12 @@ class PasswordCredentials extends GrantTypeBase
 {
     protected $grantType = 'password';
     protected $required = ['client_id', 'username', 'password'];
+
+    /**
+     * @inheritdoc
+     */
+    protected function getRequired()
+    {
+        return array_merge(parent::getRequired(), ['username', 'password']);
+    }
 }

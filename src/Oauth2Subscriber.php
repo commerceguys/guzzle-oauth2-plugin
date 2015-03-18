@@ -98,7 +98,9 @@ class Oauth2Subscriber implements SubscriberInterface
         $request = $event->getRequest();
         if ($request->getConfig()->get('auth') == 'oauth2') {
             $token = $this->getAccessToken();
-            $request->setHeader('Authorization', 'Bearer ' . $token->getToken());
+            if ($token !== null) {
+                $request->setHeader('Authorization', 'Bearer ' . $token->getToken());
+            }
         }
     }
 

@@ -60,4 +60,40 @@ class OAuth2SubscriberTest extends TestBase
         $this->assertFalse($subscriber->getAccessToken()->isExpired());
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function testSettingManualAccessToken()
+    {
+        $subscriber = new Oauth2Subscriber();
+        $client = $this->getClient([
+            'defaults' => [
+                'subscribers' => [$subscriber],
+                'auth' => 'oauth2',
+                'exceptions' => false,
+            ],
+        ]);
+
+        // Set a valid token.
+        $subscriber->setAccessToken('testToken');
+        $this->assertEquals($subscriber->getAccessToken()->getToken(), 'testToken');
+        $this->assertFalse($subscriber->getAccessToken()->isExpired());
+        $response = $client->get('api/collection');
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // Set an invalid token.
+        $subscriber->setAccessToken('testInvalidToken');
+        $response = $client->get('api/collection');
+        $this->assertEquals(401, $response->getStatusCode());
+
+        // Set an expired token.
+        $subscriber->setAccessToken('testToken', 'bearer', 500);
+        $this->assertNull($subscriber->getAccessToken());
+    }
+
+    public function testSettingManualRefreshToken()
+    {
+        $subscriber = new Oauth2Subscriber();
+        $subscriber->setRefreshToken('testRefreshToken');
+        $this->assertEquals('refresh_token', $subscriber->getRefreshToken()->getType());
+        $this->assertEquals('testRefreshToken', $subscriber->getRefreshToken()->getToken());
+    }
 }

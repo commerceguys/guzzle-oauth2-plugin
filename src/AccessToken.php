@@ -44,7 +44,7 @@ class AccessToken
     /** @return bool */
     public function isExpired()
     {
-        return $this->expires && $this->expires < new \DateTime();
+        return $this->expires !== null && $this->expires->getTimestamp() < time();
     }
 
     /** @return \DateTime|null */

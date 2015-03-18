@@ -6,7 +6,17 @@ use GuzzleHttp\Ring\Client\MockHandler;
 
 class MockOAuth2Server
 {
-    public $tokenPath = '/oauth2/token';
+    /** @var array */
+    protected $options;
+
+    public function __construct(array $options = [])
+    {
+        $defaults = [
+            'tokenExpiresIn' => 3600,
+            'tokenPath' => '/oauth2/token',
+        ];
+        $this->options = $options + $defaults;
+    }
 
     /**
      * @return MockHandler
@@ -25,7 +35,7 @@ class MockOAuth2Server
      */
     protected function getResult(array $request)
     {
-        if ($request['uri'] === $this->tokenPath) {
+        if ($request['uri'] === $this->options['tokenPath']) {
             $response = $this->oauth2Token($request);
         }
         elseif (strpos($request['uri'], 'api/') !== false) {
@@ -56,6 +66,9 @@ class MockOAuth2Server
             case 'client_credentials':
                 return $this->grantTypeClientCredentials($requestBody);
 
+            case 'refresh_token':
+                return $this->grantTypeRefreshToken($requestBody);
+
         }
         throw new \RuntimeException("Test grant type not implemented: $grantType");
     }
@@ -68,8 +81,14 @@ class MockOAuth2Server
         $token = [
             'access_token' => 'testToken',
             'token_type' => 'bearer',
-            'expires_in' => 3600,
         ];
+
+        if (isset($this->options['tokenExpires'])) {
+            $token['expires'] = $this->options['tokenExpires'];
+        }
+        elseif (isset($this->options['tokenExpiresIn'])) {
+            $token['expires_in'] = $this->options['tokenExpiresIn'];
+        }
 
         return [
             'status' => 200,
@@ -103,6 +122,20 @@ class MockOAuth2Server
     {
         if ($requestBody['client_secret'] != 'testSecret') {
             // @todo correct response headers
+            return ['status' => 401];
+        }
+
+        return $this->validTokenResponse();
+    }
+
+    /**
+     * @param array $requestBody
+     *
+     * @return array
+     */
+    protected function grantTypeRefreshToken(array $requestBody)
+    {
+        if ($requestBody['refresh_token'] != 'testRefreshToken') {
             return ['status' => 401];
         }
 

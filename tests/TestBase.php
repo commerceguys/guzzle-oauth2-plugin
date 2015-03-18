@@ -8,12 +8,13 @@ abstract class TestBase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param array $options
+     * @param array $serverOptions
      *
      * @return \GuzzleHttp\ClientInterface
      */
-    protected function getClient(array $options = [])
+    protected function getClient(array $options = [], array $serverOptions = [])
     {
-        $server = new MockOAuth2Server();
+        $server = new MockOAuth2Server($serverOptions);
         return new Client([
             'handler' => $server->getHandler()
         ] + $options);

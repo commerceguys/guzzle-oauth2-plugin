@@ -53,7 +53,7 @@ class Oauth2Subscriber implements SubscriberInterface
         $response = $event->getResponse();
         if ($response && 401 == $response->getStatusCode()) {
             $request = $event->getRequest();
-            if (!$request->getConfig()->get('retried')) {
+            if ($request->getConfig()->get('auth') == 'oauth2' && !$request->getConfig()->get('retried')) {
                 if ($token = $this->acquireAccessToken()) {
                     $this->accessToken = $token;
                     $request->getConfig()->set('retried', true);

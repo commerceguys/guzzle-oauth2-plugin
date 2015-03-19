@@ -10,7 +10,6 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 class PasswordCredentials extends GrantTypeBase
 {
     protected $grantType = 'password';
-    protected $required = ['client_id', 'username', 'password'];
 
     /**
      * @inheritdoc

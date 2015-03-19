@@ -1,6 +1,6 @@
 {
     "name": "commerceguys/guzzle-oauth2-plugin",
-    "description": "An OAuth2 plugin for Guzzle 5.x",
+    "description": "An OAuth2 plugin (subscriber) for Guzzle 5.x",
     "license": "MIT",
     "require": {
         "guzzlehttp/guzzle": "~5.0"

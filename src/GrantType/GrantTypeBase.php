@@ -3,8 +3,8 @@
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
-use GuzzleHttp\Collection;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Collection;
 
 abstract class GrantTypeBase implements GrantTypeInterface
 {

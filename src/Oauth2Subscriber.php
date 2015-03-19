@@ -25,7 +25,7 @@ class Oauth2Subscriber implements SubscriberInterface
     /**
      * Create a new Oauth2 subscriber.
      *
-     * @param GrantTypeInterface $grantType
+     * @param GrantTypeInterface             $grantType
      * @param RefreshTokenGrantTypeInterface $refreshTokenGrantType
      */
     public function __construct(GrantTypeInterface $grantType = null, RefreshTokenGrantTypeInterface $refreshTokenGrantType = null)
@@ -40,8 +40,8 @@ class Oauth2Subscriber implements SubscriberInterface
     public function getEvents()
     {
         return [
-          'before' => ['onBefore', RequestEvents::SIGN_REQUEST],
-          'error' => ['onError', RequestEvents::EARLY],
+            'before' => ['onBefore', RequestEvents::SIGN_REQUEST],
+            'error' => ['onError', RequestEvents::EARLY],
         ];
     }
 
@@ -141,8 +141,8 @@ class Oauth2Subscriber implements SubscriberInterface
      * Set the access token.
      *
      * @param AccessToken|string $accessToken
-     * @param string $type
-     * @param int $expires
+     * @param string             $type
+     * @param int                $expires
      */
     public function setAccessToken($accessToken, $type = null, $expires = null)
     {

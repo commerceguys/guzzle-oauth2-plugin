@@ -37,8 +37,7 @@ class MockOAuth2Server
     {
         if ($request['uri'] === $this->options['tokenPath']) {
             $response = $this->oauth2Token($request);
-        }
-        elseif (strpos($request['uri'], 'api/') !== false) {
+        } elseif (strpos($request['uri'], 'api/') !== false) {
             $response = $this->mockApiCall($request);
         }
         if (!isset($response)) {
@@ -85,8 +84,7 @@ class MockOAuth2Server
 
         if (isset($this->options['tokenExpires'])) {
             $token['expires'] = $this->options['tokenExpires'];
-        }
-        elseif (isset($this->options['tokenExpiresIn'])) {
+        } elseif (isset($this->options['tokenExpiresIn'])) {
             $token['expires_in'] = $this->options['tokenExpiresIn'];
         }
 

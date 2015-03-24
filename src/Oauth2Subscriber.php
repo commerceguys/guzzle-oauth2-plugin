@@ -72,11 +72,9 @@ class Oauth2Subscriber implements SubscriberInterface
     {
         $accessToken = null;
 
-        if ($this->refreshTokenGrantType) {
-            // Get an access token using the stored refresh token.
-            if ($this->refreshToken) {
-                $this->refreshTokenGrantType->setRefreshToken($this->refreshToken->getToken());
-            }
+        // Get an access token using the stored refresh token.
+        if ($this->refreshTokenGrantType && $this->refreshToken) {
+            $this->refreshTokenGrantType->setRefreshToken($this->refreshToken->getToken());
             $accessToken = $this->refreshTokenGrantType->getToken();
         }
 

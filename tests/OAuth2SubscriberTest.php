@@ -39,7 +39,7 @@ class OAuth2SubscriberTest extends TestBase
 
         $subscriber = new Oauth2Subscriber(
             $accessTokenGrantType,
-            new RefreshToken($this->getClient(), $credentials + ['refresh_token' => ''])
+            new RefreshToken($this->getClient(), $credentials)
         );
         $subscriber->setRefreshToken('testRefreshToken');
         $client = $this->getClient([

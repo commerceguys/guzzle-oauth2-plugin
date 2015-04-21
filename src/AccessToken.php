@@ -82,5 +82,4 @@ class AccessToken
     {
         return $this->type;
     }
-
 }

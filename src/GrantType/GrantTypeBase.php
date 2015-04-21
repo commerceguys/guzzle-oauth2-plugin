@@ -3,6 +3,7 @@
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
+use CommerceGuys\Guzzle\Oauth2\AccessTokenRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Collection;
 
@@ -17,6 +18,9 @@ abstract class GrantTypeBase implements GrantTypeInterface
     /** @var string */
     protected $grantType = '';
 
+    /** @var CommerceGuys\Guzzle\Oauth2\AccessTokenRepositoryInterface */
+    protected $accessTokenRepository;
+
     /**
      * @param ClientInterface $client
      * @param array           $config
@@ -24,7 +28,11 @@ abstract class GrantTypeBase implements GrantTypeInterface
     public function __construct(ClientInterface $client, array $config = [])
     {
         $this->client = $client;
+
         $this->config = Collection::fromConfig($config, $this->getDefaults(), $this->getRequired());
+
+        // Should be injected, but this way I avoid breaking the concrete GrantTypes for now.
+        $this->accessTokenRepository = new AccessTokenRepository($this->client, $this->config->toArray());
     }
 
     /**
@@ -34,7 +42,12 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getDefaults()
     {
-        return ['client_secret' => '', 'scope' => '', 'token_url' => 'oauth2/token'];
+        return [
+            'client_secret' => '',
+            'scope' => '',
+            'token_url' => 'oauth2/token',
+            'token_method' => 'POST',
+        ];
     }
 
     /**
@@ -52,15 +65,6 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     public function getToken()
     {
-        $body = $this->config->toArray();
-        $body['grant_type'] = $this->grantType;
-
-        $access_token_url = $body['token_url'];
-        unset($body['token_url']);
-
-        $response = $this->client->post($access_token_url, ['body' => $body]);
-        $data = $response->json();
-
-        return new AccessToken($data['access_token'], $data['token_type'], $data);
+        return $this->accessTokenRepository->findToken($this->grantType);
     }
 }

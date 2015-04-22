@@ -22,7 +22,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     /** @var string */
     protected $grantType = '';
 
-    /** @var CommerceGuys\Guzzle\Oauth2\AccessTokenRepositoryInterface */
+    /** @var \CommerceGuys\Guzzle\Oauth2\AccessTokenRepositoryInterface */
     protected $accessTokenRepository;
 
     /**

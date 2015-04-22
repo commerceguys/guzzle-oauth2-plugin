@@ -23,6 +23,11 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
     private $config;
 
     /**
+     * @param ClientInterface
+     */
+    private $client;
+
+    /**
      * @param ClientInterface $client
      * @param array           $config
      */

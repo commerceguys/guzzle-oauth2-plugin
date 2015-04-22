@@ -22,6 +22,10 @@
         <whitelist>
             <directory>./src/</directory>
         </whitelist>
+        <exclude>
+            <!-- <directory>./tests</directory> -->
+            <directory>./vendor</directory>
+        </exclude>
     </filter>
 
 </phpunit>

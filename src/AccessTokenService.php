@@ -4,6 +4,17 @@ namespace CommerceGuys\Guzzle\Oauth2;
 
 class AccessTokenService
 {
+
+    /**
+     * @var string
+     */
+     private $method;
+
+    /**
+     * @var string
+     */
+    private $url;
+
     /**
      * @param string $method
      * @param string $url

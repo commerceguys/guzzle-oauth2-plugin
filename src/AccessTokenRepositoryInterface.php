@@ -10,7 +10,7 @@ interface AccessTokenRepositoryInterface
      * @param string $grantType
      *   One of the supported OAuth2 grant types.
      *
-     * @return CommerceGuys\Guzzle\Oauth2\AccessToken
+     * @return AccessToken
      */
     public function findToken($grantType);
 }

@@ -14,4 +14,4 @@ install:
   - composer install --prefer-dist
 
 script:
-  - ./bin/phpunit -c ./phpunit.xml --coverage-text
+  - ./bin/phpunit --verbose --coverage-text

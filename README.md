@@ -22,6 +22,10 @@ Guzzle 3 compatibility continues in the [`1.0`](https://github.com/commerceguys/
 - Supports refresh tokens (stores them and uses them to get new access tokens).
 - Handles token expiration (acquires new tokens and retries failed requests).
 
+## Running the tests
+
+First make sure you have all the dependencies in place by running `composer install --prefer-dist`, then simply run `./bin/phpunit`.
+
 ## Example
 ```php
 use GuzzleHttp\Client;

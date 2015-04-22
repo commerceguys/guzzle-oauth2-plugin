@@ -14,16 +14,16 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
     public function testWrongInstantiation()
     {
         $this->setExpectedException(
-          'InvalidArgumentException',
-          'You must define a "token_method" in your configuration.'
+            'InvalidArgumentException',
+            'You must define a "token_method" in your configuration.'
         );
 
         new AccessTokenRepository($this->client->reveal(), []);
 
 
         $this->setExpectedException(
-          'InvalidArgumentException',
-          'You must define a "token_url" in your configuration.'
+            'InvalidArgumentException',
+            'You must define a "token_url" in your configuration.'
         );
 
         new AccessTokenRepository($this->client->reveal(), ['token_method' => 'POST']);
@@ -37,8 +37,8 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->setExpectedException(
-          'InvalidArgumentException',
-          'Argument $grantType must be a string.'
+            'InvalidArgumentException',
+            'Argument $grantType must be a string.'
         );
 
         $repository->findToken([]);
@@ -52,8 +52,8 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->setExpectedException(
-          'LogicException',
-          'The configured "token_method" is not valid.'
+            'LogicException',
+            'The configured "token_method" is not valid.'
         );
 
         $repository->findToken('foo');

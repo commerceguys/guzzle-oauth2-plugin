@@ -8,7 +8,7 @@ class AccessTokenService
     /**
      * @var string
      */
-     private $method;
+    private $method;
 
     /**
      * @var string

@@ -28,5 +28,8 @@
         {
             "name": "Patrick Dawkins"
         }
-    ]
+    ],
+    "config": {
+        "bin-dir": "bin"
+    }
 }

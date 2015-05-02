@@ -34,7 +34,12 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getDefaults()
     {
-        return ['client_secret' => '', 'scope' => '', 'token_url' => 'oauth2/token'];
+        return [
+            'client_secret' => '',
+            'scope' => '',
+            'token_url' => 'oauth2/token',
+            'auth_location' => 'headers',
+        ];
     }
 
     /**
@@ -56,14 +61,16 @@ abstract class GrantTypeBase implements GrantTypeInterface
 
         $body = $config;
         $body['grant_type'] = $this->grantType;
-        unset($body['token_url'], $body['client_id'], $body['client_secret']);
+        unset($body['token_url']);
 
-        $options = [
-          'body' => $body,
-          'auth' => [$config['client_id'], $config['client_secret']],
-        ];
+        $requestOptions = ['body' => $body];
 
-        $response = $this->client->post($config['token_url'], $options);
+        if ($config['auth_location'] !== 'body') {
+            $requestOptions['auth'] = [$config['client_id'], $config['client_secret']];
+            unset($body['client_id'], $body['client_secret']);
+        }
+
+        $response = $this->client->post($config['token_url'], $requestOptions);
         $data = $response->json();
 
         return new AccessToken($data['access_token'], $data['token_type'], $data);

@@ -63,7 +63,7 @@ class MockOAuth2Server
                 return $this->grantTypePassword($requestBody);
 
             case 'client_credentials':
-                return $this->grantTypeClientCredentials($requestBody);
+                return $this->grantTypeClientCredentials($request);
 
             case 'refresh_token':
                 return $this->grantTypeRefreshToken($requestBody);
@@ -111,14 +111,14 @@ class MockOAuth2Server
     }
 
     /**
-     * @param array $requestBody
+     * @param array $request
      *
      * @return array
      *   The response as expected by the MockHandler.
      */
-    protected function grantTypeClientCredentials(array $requestBody)
+    protected function grantTypeClientCredentials(array $request)
     {
-        if ($requestBody['client_secret'] != 'testSecret') {
+        if ($request['client']['auth'][1] != 'testSecret') {
             // @todo correct response headers
             return ['status' => 401];
         }

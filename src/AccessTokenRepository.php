@@ -7,6 +7,7 @@ use GuzzleHttp\ClientInterface;
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
 use CommerceGuys\Guzzle\Oauth2\AccessTokenService;
 use CommerceGuys\Guzzle\Oauth2\GrantType\GrantTypeBase;
+use CommerceGuys\Guzzle\Oauth2\Exception\InvalidResponseException;
 use InvalidArgumentException;
 use LogicException;
 
@@ -67,20 +68,13 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
             throw new InvalidArgumentException('Argument $grantType must be a string.');
         }
 
-        $guzzleOptions = [];
+        $guzzleOptions = $this->getGuzzleOptions();
 
-        $parameters = array_merge($this->config, $grantTypeOptions, ['grant_type' => $grantType]);
+        $parameters = $this->getRequestParameters($grantTypeOptions, $grantType);
 
-        unset($parameters['auth_location']);
+        $method = $this->accessTokenService->getMethod();
 
-        switch ($this->config['auth_location']) {
-            case GrantTypeBase::AUTH_LOCATION_HEADER:
-                $guzzleOptions['auth'] = [$this->config['client_id'], $this->config['client_secret']];
-                break;
-            default:
-        }
-
-        switch ($this->accessTokenService->getMethod()) {
+        switch ($method) {
             case 'POST':
                 $response = $this->client->post(
                     $this->accessTokenService->getUrl(),
@@ -94,11 +88,45 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
                 );
                 break;
             default:
-                throw new LogicException('The configured "token_method" is not valid.');
+                throw new LogicException("The configured token_method '$method' is not valid.");
         }
 
         $data = $response->json();
 
+        if (!isset($data['access_token'])) {
+            throw new InvalidResponseException("The returned response does not contain an access_token.");
+        }
+
+        if (!isset($data['token_type'])) {
+            throw new InvalidResponseException("The returned response does not contain a token_type.");
+        }
+
         return new AccessToken($data['access_token'], $data['token_type'], $data);
+    }
+
+    private function getGuzzleOptions()
+    {
+        $guzzleOptions = [];
+
+        switch ($this->config['auth_location']) {
+            case GrantTypeBase::AUTH_LOCATION_BODY:
+            case GrantTypeBase::AUTH_LOCATION_HEADER:
+                if (isset($this->config['client_id']) && isset($this->config['client_secret'])) {
+                    $guzzleOptions['auth'] = [$this->config['client_id'], $this->config['client_secret']];
+                }
+                break;
+            default:
+        }
+
+        return $guzzleOptions;
+    }
+
+    private function getRequestParameters($grantTypeOptions, $grantType)
+    {
+        $parameters = array_merge($this->config, $grantTypeOptions, ['grant_type' => $grantType]);
+
+        unset($parameters['auth_location']);
+
+        return $parameters;
     }
 }

@@ -53,7 +53,7 @@ class AccessTokenRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'LogicException',
-            'The configured "token_method" is not valid.'
+            'The configured token_method \'HEAD\' is not valid.'
         );
 
         $repository->findToken('foo');

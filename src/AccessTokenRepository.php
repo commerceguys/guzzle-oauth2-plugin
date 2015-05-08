@@ -43,6 +43,10 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
             throw new InvalidArgumentException('You must define a "token_url" in your configuration.');
         }
 
+        if (empty($config['auth_location'])) {
+            $config['auth_location'] = GrantTypeBase::AUTH_LOCATION_BODY;
+        }
+
         $this->accessTokenService = new AccessTokenService(
             $config['token_method'],
             $config['token_url']
@@ -63,8 +67,11 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
             throw new InvalidArgumentException('Argument $grantType must be a string.');
         }
 
-        $parameters = array_merge($this->config, $grantTypeOptions, ['grant_type' => $grantType]);
         $guzzleOptions = [];
+
+        $parameters = array_merge($this->config, $grantTypeOptions, ['grant_type' => $grantType]);
+
+        unset($parameters['auth_location']);
 
         switch ($this->config['auth_location']) {
             case GrantTypeBase::AUTH_LOCATION_HEADER:

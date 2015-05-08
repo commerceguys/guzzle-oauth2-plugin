@@ -70,6 +70,6 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     public function getToken()
     {
-        return $this->accessTokenRepository->findToken($this->grantType, $requestOptions, $headers);
+        return $this->accessTokenRepository->findToken($this->grantType);
     }
 }

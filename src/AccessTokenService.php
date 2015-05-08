@@ -4,7 +4,6 @@ namespace CommerceGuys\Guzzle\Oauth2;
 
 class AccessTokenService
 {
-
     /**
      * @var string
      */

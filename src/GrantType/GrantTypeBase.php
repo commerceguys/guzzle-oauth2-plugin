@@ -3,11 +3,16 @@
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
+use CommerceGuys\Guzzle\Oauth2\AccessTokenRepository;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Collection;
 
 abstract class GrantTypeBase implements GrantTypeInterface
 {
+    const AUTH_LOCATION_URL = 'url';
+    const AUTH_LOCATION_BODY = 'body';
+    const AUTH_LOCATION_HEADER = 'headers';
+
     /** @var ClientInterface The token endpoint client */
     protected $client;
 
@@ -17,6 +22,9 @@ abstract class GrantTypeBase implements GrantTypeInterface
     /** @var string */
     protected $grantType = '';
 
+    /** @var \CommerceGuys\Guzzle\Oauth2\AccessTokenRepositoryInterface */
+    protected $accessTokenRepository;
+
     /**
      * @param ClientInterface $client
      * @param array           $config
@@ -24,7 +32,11 @@ abstract class GrantTypeBase implements GrantTypeInterface
     public function __construct(ClientInterface $client, array $config = [])
     {
         $this->client = $client;
+
         $this->config = Collection::fromConfig($config, $this->getDefaults(), $this->getRequired());
+
+        // Should be injected, but this way I avoid breaking the concrete GrantTypes for now.
+        $this->accessTokenRepository = new AccessTokenRepository($this->client, $this->config->toArray());
     }
 
     /**
@@ -38,7 +50,8 @@ abstract class GrantTypeBase implements GrantTypeInterface
             'client_secret' => '',
             'scope' => '',
             'token_url' => 'oauth2/token',
-            'auth_location' => 'headers',
+            'auth_location' => self::AUTH_LOCATION_BODY,
+            'token_method' => 'POST',
         ];
     }
 
@@ -57,24 +70,6 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     public function getToken()
     {
-        $config = $this->config->toArray();
-
-        $body = $config;
-        $body['grant_type'] = $this->grantType;
-        unset($body['token_url'], $body['auth_location']);
-
-        $requestOptions = [];
-
-        if ($config['auth_location'] !== 'body') {
-            $requestOptions['auth'] = [$config['client_id'], $config['client_secret']];
-            unset($body['client_id'], $body['client_secret']);
-        }
-
-        $requestOptions['body'] = $body;
-
-        $response = $this->client->post($config['token_url'], $requestOptions);
-        $data = $response->json();
-
-        return new AccessToken($data['access_token'], $data['token_type'], $data);
+        return $this->accessTokenRepository->findToken($this->grantType);
     }
 }

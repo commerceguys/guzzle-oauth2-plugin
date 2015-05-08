@@ -118,7 +118,13 @@ class MockOAuth2Server
      */
     protected function grantTypeClientCredentials(array $request)
     {
-        if ($request['client']['auth'][1] != 'testSecret') {
+        $clientSecret = (isset($request['client'])
+            && isset($request['client']['auth'])
+            && isset($request['client']['auth'][1]))
+            ? $request['client']['auth'][1]
+            : null;
+
+        if ($clientSecret !== 'testSecret') {
             // @todo correct response headers
             return ['status' => 401];
         }

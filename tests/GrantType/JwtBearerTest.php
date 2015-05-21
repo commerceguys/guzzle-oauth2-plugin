@@ -18,7 +18,7 @@ class JwtBearerTest extends TestBase
     {
         $grantType = new JwtBearer($this->getClient(), [
             'client_id' => 'testClient',
-            'private_key' => new SplFileObject(__DIR__.'/../private.key')
+            'private_key' => new SplFileObject(__DIR__ . '/../private.key')
         ]);
         $token = $grantType->getToken();
         $this->assertNotEmpty($token->getToken());

@@ -23,11 +23,11 @@ class JwtBearer extends GrantTypeBase
      */
     public function __construct(ClientInterface $client, array $config = [])
     {
-      parent::__construct($client, $config);
+        parent::__construct($client, $config);
 
-      if (!($this->config->get('private_key') instanceof SplFileObject)) {
-        throw new InvalidArgumentException('private_key needs to be instance of SplFileObject');
-      }
+        if (!($this->config->get('private_key') instanceof SplFileObject)) {
+            throw new InvalidArgumentException('private_key needs to be instance of SplFileObject');
+        }
     }
 
     /**
@@ -44,9 +44,9 @@ class JwtBearer extends GrantTypeBase
     protected function getAdditionalOptions()
     {
         return [
-          'body' => [
-            'assertion' => $this->computeJwt()
-          ]
+            'body' => [
+                'assertion' => $this->computeJwt()
+            ]
         ];
     }
 
@@ -55,14 +55,14 @@ class JwtBearer extends GrantTypeBase
      */
     protected function computeJwt()
     {
-      $payload = [
-        'iss' => $this->config->get('client_id'),
-        'aud' => sprintf('%s/%s', rtrim($this->client->getBaseUrl(), '/'), ltrim($this->config->get('token_url'), '/')),
-        'exp' => time() + 60 * 60 * 1000,
-        'iat' => time()
-      ];
+        $payload = [
+            'iss' => $this->config->get('client_id'),
+            'aud' => sprintf('%s/%s', rtrim($this->client->getBaseUrl(), '/'), ltrim($this->config->get('token_url'), '/')),
+            'exp' => time() + 60 * 60 * 1000,
+            'iat' => time()
+        ];
 
-      return JWT::encode($payload, $this->readPrivateKey($this->config->get('private_key')), 'RS256');
+        return JWT::encode($payload, $this->readPrivateKey($this->config->get('private_key')), 'RS256');
     }
 
     /**
@@ -72,10 +72,10 @@ class JwtBearer extends GrantTypeBase
      */
     protected function readPrivateKey(SplFileObject $privateKey)
     {
-      $key = '';
-      while (!$privateKey->eof()) {
-        $key .= $privateKey->fgets();
-      }
-      return $key;
+        $key = '';
+        while (!$privateKey->eof()) {
+            $key .= $privateKey->fgets();
+        }
+        return $key;
     }
 }

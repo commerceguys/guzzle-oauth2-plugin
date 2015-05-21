@@ -55,9 +55,6 @@ class JwtBearer extends GrantTypeBase
      */
     protected function computeJwt()
     {
-      $keyFile = $this->config->get('private_key');
-      $key = $keyFile->fread($keyFile->getSize());
-
       $payload = [
         'iss' => $this->config->get('client_id'),
         'aud' => sprintf('%s/%s', rtrim($this->client->getBaseUrl(), '/'), ltrim($this->config->get('token_url'), '/')),
@@ -65,6 +62,20 @@ class JwtBearer extends GrantTypeBase
         'iat' => time()
       ];
 
-      return JWT::encode($payload, $key, 'RS256');
+      return JWT::encode($payload, $this->readPrivateKey($this->config->get('private_key')), 'RS256');
+    }
+
+    /**
+     * Read private key
+     *
+     * @param SplFileObject $privateKey
+     */
+    protected function readPrivateKey(SplFileObject $privateKey)
+    {
+      $key = '';
+      while (!$privateKey->eof()) {
+        $key .= $privateKey->fgets();
+      }
+      return $key;
     }
 }

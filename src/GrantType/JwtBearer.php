@@ -58,7 +58,7 @@ class JwtBearer extends GrantTypeBase
         $payload = [
             'iss' => $this->config->get('client_id'),
             'aud' => sprintf('%s/%s', rtrim($this->client->getBaseUrl(), '/'), ltrim($this->config->get('token_url'), '/')),
-            'exp' => time() + 60 * 60 * 1000,
+            'exp' => time() + 60 * 60,
             'iat' => time()
         ];
 

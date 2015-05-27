@@ -68,6 +68,8 @@ class MockOAuth2Server
             case 'refresh_token':
                 return $this->grantTypeRefreshToken($requestBody);
 
+            case 'urn:ietf:params:oauth:grant-type:jwt-bearer':
+                return $this->grantTypeJwtBearer($requestBody);
         }
         throw new \RuntimeException("Test grant type not implemented: $grantType");
     }
@@ -134,6 +136,20 @@ class MockOAuth2Server
     protected function grantTypeRefreshToken(array $requestBody)
     {
         if ($requestBody['refresh_token'] != 'testRefreshToken') {
+            return ['status' => 401];
+        }
+
+        return $this->validTokenResponse();
+    }
+
+    /**
+     * @param array $requestBody
+     *
+     * @return array
+     */
+    protected function grantTypeJwtBearer(array $requestBody)
+    {
+        if (!array_key_exists('assertion', $requestBody)) {
             return ['status' => 401];
         }
 

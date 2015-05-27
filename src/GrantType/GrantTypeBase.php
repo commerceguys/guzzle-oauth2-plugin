@@ -53,6 +53,16 @@ abstract class GrantTypeBase implements GrantTypeInterface
     }
 
     /**
+     * Get additional options, if any.
+     *
+     * @return array|null
+     */
+    protected function getAdditionalOptions()
+    {
+        return null;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getToken()
@@ -71,6 +81,10 @@ abstract class GrantTypeBase implements GrantTypeInterface
         }
 
         $requestOptions['body'] = $body;
+
+        if ($additionalOptions = $this->getAdditionalOptions()) {
+            $requestOptions = array_merge_recursive($requestOptions, $additionalOptions);
+        }
 
         $response = $this->client->post($config['token_url'], $requestOptions);
         $data = $response->json();

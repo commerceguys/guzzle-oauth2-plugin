@@ -88,6 +88,17 @@ abstract class GrantTypeBase implements GrantTypeInterface
 
         $response = $this->client->post($config['token_url'], $requestOptions);
         $data = $response->json();
+        
+        if(!isset($data['access_token']) or !isset($data['token_type'])) {
+            $message = 'Invalid response from server.';
+            if(isset($data['error'])) {
+                $message.= ' Error: ' . $data['error'] . '.';
+            }
+            if(isset($data['error_description'])) {
+                $message.= ' Description: ' . $data['error_description'] . '.';
+            }
+            throw new \RuntimeException($message);
+        }
 
         return new AccessToken($data['access_token'], $data['token_type'], $data);
     }

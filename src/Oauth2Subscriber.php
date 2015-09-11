@@ -70,9 +70,11 @@ class Oauth2Subscriber implements SubscriberInterface
     /**
      * Get a new access token.
      *
+     * @param bool $forceCache
+     *
      * @return AccessToken|null
      */
-    protected function acquireAccessToken()
+    protected function acquireAccessToken($forceCache = false)
     {
         $accessToken = null;
 
@@ -88,7 +90,7 @@ class Oauth2Subscriber implements SubscriberInterface
 
         if (!$accessToken && $this->grantType) {
             // Get a new access token.
-            $accessToken = $this->grantType->getToken();
+            $accessToken = $this->grantType->getToken($forceCache);
         }
 
         return $accessToken ?: null;

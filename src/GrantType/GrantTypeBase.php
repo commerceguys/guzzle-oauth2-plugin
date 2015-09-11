@@ -90,16 +90,18 @@ abstract class GrantTypeBase implements GrantTypeInterface
     }
 
     /**
+     * @param bool $forceCache
+     *
      * @return AccessToken
      */
-    public function getToken()
+    public function getToken($forceCache = false)
     {
         $config = $this->config->toArray();
 
         if ($this->cache) {
             $key = $this->getCacheKey($config);
 
-            if (!$data = $this->cache->fetch($key)) { //cache miss
+            if ($forceCache || !$data = $this->cache->fetch($key)) { //cache miss
 
                 $lifetime = 0;
                 $data     = $this->getTokenDatas($config);

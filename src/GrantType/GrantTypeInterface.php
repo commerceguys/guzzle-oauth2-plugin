@@ -4,6 +4,7 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
 
+
 interface GrantTypeInterface
 {
     /**
@@ -12,4 +13,11 @@ interface GrantTypeInterface
      * @return AccessToken
      */
     public function getToken();
+
+    /**
+     * @param $cache
+     *
+     * @return mixed
+     */
+    public function setCache($cache);
 }

@@ -22,7 +22,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     /**
      * @inheritdoc
      */
-    public function setRefreshToken($refreshToken)
+    public function setRefreshToken()
     {
         $this->config['refresh_token'] = $refreshToken;
     }
@@ -44,6 +44,6 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
             throw new \RuntimeException("Refresh token not available");
         }
 
-        return parent::getToken();
+        return parent::getToken($forcecache);
     }
 }

@@ -56,6 +56,7 @@ class Oauth2Subscriber implements SubscriberInterface
             if ($request->getConfig()->get('auth') == 'oauth2' && !$request->getConfig()->get('retried')) {
                 if ($token = $this->acquireAccessToken()) {
                     $this->accessToken = $token;
+                    $this->refreshToken = $token->getRefreshToken();
                     $request->getConfig()->set('retried', true);
                     $event->intercept($event->getClient()->send($request));
                 }
@@ -122,7 +123,7 @@ class Oauth2Subscriber implements SubscriberInterface
             // Try to acquire a new access token from the server.
             $this->accessToken = $this->acquireAccessToken();
             if ($this->accessToken) {
-                $this->refreshToken = $this->accessToken->getRefreshToken() ?: null;
+                $this->refreshToken = $this->accessToken->getRefreshToken();
             }
         }
 
@@ -154,6 +155,7 @@ class Oauth2Subscriber implements SubscriberInterface
             throw new \InvalidArgumentException('Invalid access token');
         }
         $this->accessToken = $accessToken;
+        $this->refreshToken = $accessToken->getRefreshToken();
     }
 
     /**

@@ -81,6 +81,7 @@ class MockOAuth2Server
     {
         $token = [
             'access_token' => 'testToken',
+            'refresh_token' => 'testRefreshTokenFromServer',
             'token_type' => 'bearer',
         ];
 

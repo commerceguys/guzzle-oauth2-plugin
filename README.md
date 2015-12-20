@@ -23,6 +23,9 @@ Guzzle 3 compatibility continues in the [`1.0`](https://github.com/commerceguys/
 - Supports refresh tokens (stores them and uses them to get new access tokens).
 - Handles token expiration (acquires new tokens and retries failed requests).
 
+- You can now optionally deal with token persistence with doctrine cache. Just require doctrine/cache , instantiate a cache implementation.
+  tokens are now cached for a lifetime corresponding to their expire value.
+
 ## Running the tests
 
 First make sure you have all the dependencies in place by running `composer install --prefer-dist`, then simply run `./bin/phpunit`.
@@ -49,6 +52,11 @@ $token = new PasswordCredentials($oauth2Client, $config);
 $refreshToken = new RefreshToken($oauth2Client, $config);
 
 $oauth2 = new Oauth2Subscriber($token, $refreshToken);
+
+
+$redis_client = new Predis\Client();
+$doctrine_cache = new \Doctrine\Common\Cache\PredisCache($redis_client);
+$oauth2->setCache($doctrine_cache);
 
 $client = new Client([
     'defaults' => [

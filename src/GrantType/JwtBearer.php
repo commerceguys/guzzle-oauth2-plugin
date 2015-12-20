@@ -3,6 +3,7 @@
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use GuzzleHttp\ClientInterface;
+use CommerceGuys\Guzzle\Oauth2\GrantType\GrantTypeBase;
 use JWT;
 use SplFileObject;
 use InvalidArgumentException;
@@ -68,8 +69,6 @@ class JwtBearer extends GrantTypeBase
      * Read private key
      *
      * @param SplFileObject $privateKey
-     *
-     * @return string
      */
     protected function readPrivateKey(SplFileObject $privateKey)
     {

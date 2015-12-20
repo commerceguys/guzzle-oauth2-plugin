@@ -38,12 +38,12 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     /**
      * @inheritdoc
      */
-    public function getToken()
+    public function getToken($forceCache = false)
     {
         if (!$this->hasRefreshToken()) {
             throw new \RuntimeException("Refresh token not available");
         }
 
-        return parent::getToken();
+        return parent::getToken($forceCache);
     }
 }

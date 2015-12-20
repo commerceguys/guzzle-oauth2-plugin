@@ -8,6 +8,7 @@ use GuzzleHttp\Event\BeforeEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
+use Doctrine\Common\Cache\Cache;
 
 class Oauth2Subscriber implements SubscriberInterface
 {
@@ -21,6 +22,9 @@ class Oauth2Subscriber implements SubscriberInterface
     protected $grantType;
     /** @var RefreshTokenGrantTypeInterface */
     protected $refreshTokenGrantType;
+
+    /** @var  Cache */
+    protected $cache;
 
     /**
      * Create a new Oauth2 subscriber.
@@ -54,7 +58,7 @@ class Oauth2Subscriber implements SubscriberInterface
         if ($response && 401 == $response->getStatusCode()) {
             $request = $event->getRequest();
             if ($request->getConfig()->get('auth') == 'oauth2' && !$request->getConfig()->get('retried')) {
-                if ($token = $this->acquireAccessToken()) {
+                if ($token = $this->acquireAccessToken(true)) {
                     $this->accessToken = $token;
                     $this->refreshToken = $token->getRefreshToken();
                     $request->getConfig()->set('retried', true);
@@ -67,9 +71,11 @@ class Oauth2Subscriber implements SubscriberInterface
     /**
      * Get a new access token.
      *
+     * @param bool $forceCache
+     *
      * @return AccessToken|null
      */
-    protected function acquireAccessToken()
+    protected function acquireAccessToken($forceCache = false)
     {
         $accessToken = null;
 
@@ -85,7 +91,7 @@ class Oauth2Subscriber implements SubscriberInterface
 
         if (!$accessToken && $this->grantType) {
             // Get a new access token.
-            $accessToken = $this->grantType->getToken();
+            $accessToken = $this->grantType->getToken($forceCache);
         }
 
         return $accessToken ?: null;
@@ -171,5 +177,27 @@ class Oauth2Subscriber implements SubscriberInterface
             throw new \InvalidArgumentException('Invalid refresh token');
         }
         $this->refreshToken = $refreshToken;
+    }
+
+    /**
+     * @param \Doctrine\Common\Cache\Cache $cache Doctrine cache instance
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setCache($cache)
+    {
+        if (!$cache instanceof \Doctrine\Common\Cache\Cache) {
+            throw new \InvalidArgumentException('Provided cache must implement Doctrine Cache interface');
+        }
+
+        $this->cache = $cache;
+
+        if (null !== $this->grantType) {
+            $this->grantType->setCache($cache);
+        }
+
+        if (null !== $this->refreshTokenGrantType) {
+            $this->refreshTokenGrantType->setCache($cache);
+        }
     }
 }

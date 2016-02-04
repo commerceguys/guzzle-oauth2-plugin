@@ -4,17 +4,31 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Collection;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\RequestOptions;
 
 abstract class GrantTypeBase implements GrantTypeInterface
 {
-    /** @var ClientInterface The token endpoint client */
+    const CONFIG_TOKEN_URL = 'token_url';
+    const CONFIG_CLIENT_ID = 'client_id';
+    const CONFIG_CLIENT_SECRET = 'client_secret';
+    const CONFIG_AUTH_LOCATION = 'auth_location';
+
+    const GRANT_TYPE = 'grant_type';
+
+    /**
+     * @var ClientInterface The token endpoint client
+     */
     protected $client;
 
-    /** @var Collection Configuration settings */
+    /**
+     * @var array Configuration settings
+     */
     protected $config;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $grantType = '';
 
     /**
@@ -24,7 +38,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     public function __construct(ClientInterface $client, array $config = [])
     {
         $this->client = $client;
-        $this->config = Collection::fromConfig($config, $this->getDefaults(), $this->getRequired());
+        $this->config = array_merge($config, $this->getDefaults(), $this->getRequired());
     }
 
     /**
@@ -35,10 +49,10 @@ abstract class GrantTypeBase implements GrantTypeInterface
     protected function getDefaults()
     {
         return [
-            'client_secret' => '',
+            self::CONFIG_CLIENT_SECRET => '',
             'scope' => '',
-            'token_url' => 'oauth2/token',
-            'auth_location' => 'headers',
+            self::CONFIG_TOKEN_URL => 'oauth2/token',
+            self::CONFIG_AUTH_LOCATION => 'headers',
         ];
     }
 
@@ -49,7 +63,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getRequired()
     {
-        return ['client_id'];
+        return [self::CONFIG_CLIENT_ID];
     }
 
     /**
@@ -67,27 +81,26 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     public function getToken()
     {
-        $config = $this->config->toArray();
-
-        $body = $config;
-        $body['grant_type'] = $this->grantType;
-        unset($body['token_url'], $body['auth_location']);
+        $body = $this->config;
+        $body[self::GRANT_TYPE] = $this->grantType;
+        unset($body[self::CONFIG_TOKEN_URL], $body[self::CONFIG_AUTH_LOCATION]);
 
         $requestOptions = [];
 
-        if ($config['auth_location'] !== 'body') {
-            $requestOptions['auth'] = [$config['client_id'], $config['client_secret']];
-            unset($body['client_id'], $body['client_secret']);
+        if ($this->config[self::CONFIG_AUTH_LOCATION] !== RequestOptions::BODY) {
+            $requestOptions[RequestOptions::AUTH] = [$this->config[self::CONFIG_CLIENT_ID], $this->config[self::CONFIG_CLIENT_SECRET]];
+            unset($body[self::CONFIG_CLIENT_ID], $body[self::CONFIG_CLIENT_SECRET]);
         }
 
-        $requestOptions['body'] = $body;
+        $requestOptions[RequestOptions::FORM_PARAMS] = $body;
 
-        if ($additionalOptions = $this->getAdditionalOptions()) {
+        if ($additionalOptions  = $this->getAdditionalOptions()) {
             $requestOptions = array_merge_recursive($requestOptions, $additionalOptions);
         }
 
-        $response = $this->client->post($config['token_url'], $requestOptions);
-        $data = $response->json();
+        $request = new Request('POST', $this->config[self::CONFIG_TOKEN_URL], $requestOptions, $body);
+        $response = $this->client->send($request);
+        $data = json_decode($response->getBody()->__toString(), true);
 
         return new AccessToken($data['access_token'], $data['token_type'], $data);
     }

@@ -4,23 +4,36 @@ namespace CommerceGuys\Guzzle\Oauth2;
 
 use CommerceGuys\Guzzle\Oauth2\GrantType\GrantTypeInterface;
 use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshTokenGrantTypeInterface;
-use GuzzleHttp\Event\BeforeEvent;
-use GuzzleHttp\Event\ErrorEvent;
-use GuzzleHttp\Event\RequestEvents;
-use GuzzleHttp\Event\SubscriberInterface;
+use GuzzleHttp\Client;
+use Psr\Http\Message\RequestInterface;
+use Symfony\Component\DependencyInjection\Container;
 
-class Oauth2Subscriber implements SubscriberInterface
+class OauthModifier
 {
-
-    /** @var AccessToken|null */
+    /**
+     * @var AccessToken|null
+     */
     protected $accessToken;
-    /** @var AccessToken|null */
+
+    /**
+     * @var AccessToken|null
+     */
     protected $refreshToken;
 
-    /** @var GrantTypeInterface */
+    /**
+     * @var GrantTypeInterface
+     */
     protected $grantType;
-    /** @var RefreshTokenGrantTypeInterface */
+
+    /**
+     * @var RefreshTokenGrantTypeInterface
+     */
     protected $refreshTokenGrantType;
+
+    /**
+     * @var Client
+     */
+    protected $client;
 
     /**
      * Create a new Oauth2 subscriber.
@@ -28,8 +41,12 @@ class Oauth2Subscriber implements SubscriberInterface
      * @param GrantTypeInterface             $grantType
      * @param RefreshTokenGrantTypeInterface $refreshTokenGrantType
      */
-    public function __construct(GrantTypeInterface $grantType = null, RefreshTokenGrantTypeInterface $refreshTokenGrantType = null)
-    {
+    public function __construct(
+//        Client $client,
+        GrantTypeInterface $grantType = null,
+        RefreshTokenGrantTypeInterface $refreshTokenGrantType = null
+    ) {
+//        $this->client = $client;
         $this->grantType = $grantType;
         $this->refreshTokenGrantType = $refreshTokenGrantType;
     }
@@ -37,31 +54,32 @@ class Oauth2Subscriber implements SubscriberInterface
     /**
      * @inheritdoc
      */
-    public function getEvents()
+    public function onBefore(/*callable $fn*/)
     {
-        return [
-            'before' => ['onBefore', RequestEvents::SIGN_REQUEST],
-            'error' => ['onError', RequestEvents::EARLY],
-        ];
-    }
+        return function (callable $handler)/* use ($fn)*/ {
+            return function (RequestInterface $request, array $options) use ($handler/*, $fn*/) {
+//                if ('oauth2' == $this->client->getConfig('auth')) {
+//                    $token = $this->getAccessToken();
+//                    if ($token !== null) {
+//                        return $request->withAddedHeader('Authorization', 'Bearer ' . $token->getToken());
+//                    }
+//                }
+                var_dump($options);
 
-    /**
-     * @inheritdoc
-     */
-    public function onError(ErrorEvent $event)
-    {
-        $response = $event->getResponse();
-        if ($response && 401 == $response->getStatusCode()) {
-            $request = $event->getRequest();
-            if ($request->getConfig()->get('auth') == 'oauth2' && !$request->getConfig()->get('retried')) {
-                if ($token = $this->acquireAccessToken()) {
-                    $this->accessToken = $token;
-                    $this->refreshToken = $token->getRefreshToken();
-                    $request->getConfig()->set('retried', true);
-                    $event->intercept($event->getClient()->send($request));
-                }
-            }
-        }
+                return $handler($request, $options);
+            };
+        };
+//        return function(RequestInterface $request) {
+//            $request->getRequestTarget()
+//            if ('oauth2' == $this->client->getConfig('auth')) {
+//                $token = $this->getAccessToken();
+//                if ($token !== null) {
+//                    return $request->withAddedHeader('Authorization', 'Bearer ' . $token->getToken());
+//                }
+//            }
+//
+//            return $request;
+//        };
     }
 
     /**
@@ -89,22 +107,6 @@ class Oauth2Subscriber implements SubscriberInterface
         }
 
         return $accessToken ?: null;
-    }
-
-    /**
-     * Add the Authorization header to requests.
-     *
-     * @param BeforeEvent $event Event received
-     */
-    public function onBefore(BeforeEvent $event)
-    {
-        $request = $event->getRequest();
-        if ($request->getConfig()->get('auth') == 'oauth2') {
-            $token = $this->getAccessToken();
-            if ($token !== null) {
-                $request->setHeader('Authorization', 'Bearer ' . $token->getToken());
-            }
-        }
     }
 
     /**
@@ -146,6 +148,8 @@ class Oauth2Subscriber implements SubscriberInterface
      * @param AccessToken|string $accessToken
      * @param string             $type
      * @param int                $expires
+     *
+     * @return self
      */
     public function setAccessToken($accessToken, $type = null, $expires = null)
     {
@@ -156,12 +160,16 @@ class Oauth2Subscriber implements SubscriberInterface
         }
         $this->accessToken = $accessToken;
         $this->refreshToken = $accessToken->getRefreshToken();
+
+        return $this;
     }
 
     /**
      * Set the refresh token.
      *
      * @param AccessToken|string $refreshToken The refresh token
+     *
+     * @return self
      */
     public function setRefreshToken($refreshToken)
     {
@@ -170,6 +178,9 @@ class Oauth2Subscriber implements SubscriberInterface
         } elseif (!$refreshToken instanceof AccessToken) {
             throw new \InvalidArgumentException('Invalid refresh token');
         }
+
         $this->refreshToken = $refreshToken;
+
+        return $this;
     }
 }

@@ -3,7 +3,9 @@
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use GuzzleHttp\ClientInterface;
-use JWT;
+use Firebase\JWT\JWT;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\UriInterface;
 use SplFileObject;
 use InvalidArgumentException;
 
@@ -14,6 +16,8 @@ use InvalidArgumentException;
  */
 class JwtBearer extends GrantTypeBase
 {
+    const CONFIG_PRIVATE_KEY = 'private_key';
+
     protected $grantType = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
 
     /**
@@ -24,7 +28,7 @@ class JwtBearer extends GrantTypeBase
     {
         parent::__construct($client, $config);
 
-        if (!($this->config->get('private_key') instanceof SplFileObject)) {
+        if (!($this->config[self::CONFIG_PRIVATE_KEY] instanceof SplFileObject)) {
             throw new InvalidArgumentException('private_key needs to be instance of SplFileObject');
         }
     }
@@ -34,7 +38,7 @@ class JwtBearer extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), ['private_key']);
+        return array_merge(parent::getRequired(), [self::CONFIG_PRIVATE_KEY]);
     }
 
     /**
@@ -43,7 +47,7 @@ class JwtBearer extends GrantTypeBase
     protected function getAdditionalOptions()
     {
         return [
-            'body' => [
+            RequestOptions::FORM_PARAMS => [
                 'assertion' => $this->computeJwt()
             ]
         ];
@@ -51,12 +55,16 @@ class JwtBearer extends GrantTypeBase
 
     /**
      * Compute JWT, signing with provided private key
+     *
+     * @return string
      */
     protected function computeJwt()
     {
+        $baseUri = $this->client->getConfig('base_uri');
+
         $payload = [
-            'iss' => $this->config->get('client_id'),
-            'aud' => sprintf('%s/%s', rtrim($this->client->getBaseUrl(), '/'), ltrim($this->config->get('token_url'), '/')),
+            'iss' => $this->config[self::CONFIG_CLIENT_ID],
+            'aud' => sprintf('%s/%s', rtrim(($baseUri instanceof UriInterface ? $baseUri->__toString() : ''), '/'), ltrim($this->config[self::CONFIG_TOKEN_URL], '/')),
             'exp' => time() + 60 * 60,
             'iat' => time()
         ];
@@ -77,6 +85,7 @@ class JwtBearer extends GrantTypeBase
         while (!$privateKey->eof()) {
             $key .= $privateKey->fgets();
         }
+
         return $key;
     }
 }

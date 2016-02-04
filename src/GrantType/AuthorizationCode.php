@@ -16,7 +16,7 @@ class AuthorizationCode extends GrantTypeBase
      */
     protected function getDefaults()
     {
-        return parent::getDefaults() + ['redirect_uri' => ''];
+        return array_merge(parent::getDefaults(), ['redirect_uri' => '']);
     }
 
     /**

@@ -9,6 +9,11 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
  */
 class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterface
 {
+    const CONFIG_REFRESH_TOKEN = 'refresh_token';
+
+    /**
+     * @var string
+     */
     protected $grantType = 'refresh_token';
 
     /**
@@ -16,7 +21,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
      */
     protected function getDefaults()
     {
-        return parent::getDefaults() + ['refresh_token' => ''];
+        return parent::getDefaults() + [self::CONFIG_REFRESH_TOKEN => ''];
     }
 
     /**
@@ -24,7 +29,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
      */
     public function setRefreshToken($refreshToken)
     {
-        $this->config['refresh_token'] = $refreshToken;
+        $this->config[self::CONFIG_REFRESH_TOKEN] = $refreshToken;
     }
 
     /**
@@ -32,7 +37,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
      */
     public function hasRefreshToken()
     {
-        return !empty($this->config['refresh_token']);
+        return !empty($this->config[self::CONFIG_REFRESH_TOKEN]);
     }
 
     /**

@@ -9,6 +9,9 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
  */
 class PasswordCredentials extends GrantTypeBase
 {
+    const CONFIG_USERNAME = 'username';
+    const CONFIG_PASSWORD = 'password';
+
     protected $grantType = 'password';
 
     /**
@@ -16,6 +19,6 @@ class PasswordCredentials extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), ['username', 'password']);
+        return array_merge(parent::getRequired(), [self::CONFIG_USERNAME, self::CONFIG_PASSWORD]);
     }
 }

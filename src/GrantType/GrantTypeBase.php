@@ -38,7 +38,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     public function __construct(ClientInterface $client, array $config = [])
     {
         $this->client = $client;
-        $this->config = array_merge($config, $this->getDefaults(), $this->getRequired());
+        $this->config = array_merge($this->getDefaults(), $this->getRequired(), $config);
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getRequired()
     {
-        return [self::CONFIG_CLIENT_ID];
+        return [self::CONFIG_CLIENT_ID => ''];
     }
 
     /**
@@ -73,6 +73,28 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getAdditionalOptions()
     {
+        return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function getConfigByName($name)
+    {
+        if (array_key_exists($name, $this->config)) {
+            return $this->config[$name];
+        }
+
         return null;
     }
 
@@ -98,8 +120,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
             $requestOptions = array_merge_recursive($requestOptions, $additionalOptions);
         }
 
-        $request = new Request('POST', $this->config[self::CONFIG_TOKEN_URL], $requestOptions, $body);
-        $response = $this->client->send($request);
+        $response = $this->client->post($this->config[self::CONFIG_TOKEN_URL], $requestOptions);
         $data = json_decode($response->getBody()->__toString(), true);
 
         return new AccessToken($data['access_token'], $data['token_type'], $data);

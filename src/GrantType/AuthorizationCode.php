@@ -24,6 +24,6 @@ class AuthorizationCode extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), ['code']);
+        return array_merge(parent::getRequired(), ['code' => '']);
     }
 }

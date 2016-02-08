@@ -19,6 +19,6 @@ class PasswordCredentials extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), [self::CONFIG_USERNAME, self::CONFIG_PASSWORD]);
+        return array_merge(parent::getRequired(), [self::CONFIG_USERNAME => '', self::CONFIG_PASSWORD => '']);
     }
 }

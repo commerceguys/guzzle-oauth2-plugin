@@ -38,7 +38,7 @@ class JwtBearer extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), [self::CONFIG_PRIVATE_KEY]);
+        return array_merge(parent::getRequired(), [self::CONFIG_PRIVATE_KEY => '']);
     }
 
     /**

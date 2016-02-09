@@ -38,7 +38,7 @@ class JwtBearer extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), [self::CONFIG_PRIVATE_KEY => '']);
+        return array_merge(parent::getRequired(), [self::CONFIG_PRIVATE_KEY => null]);
     }
 
     /**
@@ -69,7 +69,7 @@ class JwtBearer extends GrantTypeBase
             'iat' => time()
         ];
 
-        return JWT::encode($payload, $this->readPrivateKey($this->config->get('private_key')), 'RS256');
+        return JWT::encode($payload, $this->readPrivateKey($this->config[self::CONFIG_PRIVATE_KEY]), 'RS256');
     }
 
     /**

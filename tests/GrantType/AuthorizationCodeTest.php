@@ -7,9 +7,15 @@ use CommerceGuys\Guzzle\Oauth2\Tests\TestBase;
 
 class AuthorizationCodeTest extends TestBase
 {
+    public function testMissingParentConfigException()
+    {
+        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "client_id"');
+        new AuthorizationCode($this->getClient());
+    }
+
     public function testMissingConfigException()
     {
-        $this->setExpectedException('\\InvalidArgumentException', 'Config is missing the following keys: client_id, code');
-        new AuthorizationCode($this->getClient());
+        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "code"');
+        new AuthorizationCode($this->getClient(), ['client_id' => 'testClient']);
     }
 }

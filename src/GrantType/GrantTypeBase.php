@@ -6,6 +6,7 @@ use CommerceGuys\Guzzle\Oauth2\AccessToken;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
+use InvalidArgumentException;
 
 abstract class GrantTypeBase implements GrantTypeInterface
 {
@@ -15,6 +16,8 @@ abstract class GrantTypeBase implements GrantTypeInterface
     const CONFIG_AUTH_LOCATION = 'auth_location';
 
     const GRANT_TYPE = 'grant_type';
+
+    const MISSING_ARGUMENT = 'The config is missing the following key: "%s"';
 
     /**
      * @var ClientInterface The token endpoint client
@@ -39,6 +42,12 @@ abstract class GrantTypeBase implements GrantTypeInterface
     {
         $this->client = $client;
         $this->config = array_merge($this->getDefaults(), $this->getRequired(), $config);
+
+        foreach ($this->getRequired() as $key => $requiredAttribute) {
+            if (!isset($this->config[$key]) || empty($this->config[$key])) {
+                throw new InvalidArgumentException(sprintf(self::MISSING_ARGUMENT, $key));
+            }
+        }
     }
 
     /**
@@ -51,7 +60,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
         return [
             self::CONFIG_CLIENT_SECRET => '',
             'scope' => '',
-            self::CONFIG_TOKEN_URL => 'oauth2/token',
+            self::CONFIG_TOKEN_URL => '/oauth2/token',
             self::CONFIG_AUTH_LOCATION => 'headers',
         ];
     }
@@ -63,7 +72,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
      */
     protected function getRequired()
     {
-        return [self::CONFIG_CLIENT_ID => ''];
+        return [self::CONFIG_CLIENT_ID => null];
     }
 
     /**

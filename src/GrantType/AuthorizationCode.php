@@ -1,6 +1,7 @@
 <?php
 
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
+use GuzzleHttp\ClientInterface;
 
 /**
  * Authorization code grant type.

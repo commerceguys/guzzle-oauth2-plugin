@@ -2,13 +2,18 @@
 
 namespace CommerceGuys\Guzzle\Oauth2\Tests;
 
-use GuzzleHttp\Ring\Client\MockHandler;
+
+use GuzzleHttp\Handler\MockHandler;
+use Psr\Http\Message\RequestInterface;
 
 class MockOAuth2Server
 {
     /** @var array */
     protected $options;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options = [])
     {
         $defaults = [
@@ -23,21 +28,22 @@ class MockOAuth2Server
      */
     public function getHandler()
     {
-        return new MockHandler(function (array $request) {
-            return $this->getResult($request);
-        });
+        return new MockHandler([function (RequestInterface $request, array $options) {
+            return $this->getResult($request, $options);
+        }]);
     }
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
+     * @param array            $options
      *
      * @return array
      */
-    protected function getResult(array $request)
+    protected function getResult(RequestInterface $request, array $options)
     {
-        if ($request['uri'] === $this->options['tokenPath']) {
+        if ($request->getUri()->getPath() === $this->options['tokenPath']) {
             $response = $this->oauth2Token($request);
-        } elseif (strpos($request['uri'], 'api/') !== false) {
+        } elseif (strpos($request->getUri()->getPath(), 'api/') !== false) {
             $response = $this->mockApiCall($request);
         }
         if (!isset($response)) {
@@ -48,15 +54,14 @@ class MockOAuth2Server
     }
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
      *
      * @return array
      */
-    protected function oauth2Token(array $request)
+    protected function oauth2Token(RequestInterface $request)
     {
-        /** @var \GuzzleHttp\Post\PostBody $body */
-        $body = $request['body'];
-        $requestBody = $body->getFields();
+        $body = $request->getBody()->__toString();
+        $requestBody = json_decode($body, true);
         $grantType = $requestBody['grant_type'];
         switch ($grantType) {
             case 'password':
@@ -114,14 +119,14 @@ class MockOAuth2Server
     }
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
      *
      * @return array
      *   The response as expected by the MockHandler.
      */
-    protected function grantTypeClientCredentials(array $request)
+    protected function grantTypeClientCredentials(RequestInterface $request)
     {
-        if ($request['client']['auth'][1] != 'testSecret') {
+        if ($request->getHeader('auth')[1] != 'testSecret') {
             // @todo correct response headers
             return ['status' => 401];
         }
@@ -158,13 +163,13 @@ class MockOAuth2Server
     }
 
     /**
-     * @param array $request
+     * @param RequestInterface $request
      *
      * @return array
      */
-    protected function mockApiCall(array $request)
+    protected function mockApiCall(RequestInterface $request)
     {
-        if (!isset($request['headers']['Authorization']) || $request['headers']['Authorization'][0] != 'Bearer testToken') {
+        if (!empty($request->getHeader('Authorization')) || $request->getHeader('Authorization')[0] != 'Bearer testToken') {
             return ['status' => 401];
         }
 

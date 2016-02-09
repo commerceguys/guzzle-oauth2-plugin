@@ -8,16 +8,22 @@ use SplFileObject;
 
 class JwtBearerTest extends TestBase
 {
+    public function testMissingParentConfigException()
+    {
+        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "client_id"');
+        new JwtBearer($this->getClient());
+    }
+
     public function testMissingConfigException()
     {
-        $this->setExpectedException('\\InvalidArgumentException', 'Config is missing the following keys: client_id, private_key');
-        new JwtBearer($this->getClient());
+        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "private_key"');
+        new JwtBearer($this->getClient(), ['client_id' => 'testClient']);
     }
 
     public function testPrivateKeyNotSplFileObject()
     {
         $this->setExpectedException('\\InvalidArgumentException', 'private_key needs to be instance of SplFileObject');
-        $grantType = new JwtBearer($this->getClient(), [
+        new JwtBearer($this->getClient(), [
             'client_id' => 'testClient',
             'private_key' => 'INVALID'
         ]);

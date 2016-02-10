@@ -1,2 +1,23 @@
+build_failure_conditions:
+    - 'elements.rating(< C).new.exists'
+    - 'issues.label("coding-style").new.exists'
+    - 'issues.severity(>= MAJOR).new.exists'
+
 tools:
     external_code_coverage: true
+
+build:
+    dependencies:
+        before:
+            - cd ../ && git clone git@github.com:/lemasson-h/guzzle-oauth2-plugin.git shared; cd -
+            - sudo apt-get update
+            - sudo a2dismod php7
+        override:
+            -
+                command: 'composer install --no-interaction'
+                idle_timeout: 600
+    tests:
+        before:
+            - mkdir -p build/logs
+        override:
+            - ./bin/phpunit --verbose --coverage-clover build/logs/clover.xml

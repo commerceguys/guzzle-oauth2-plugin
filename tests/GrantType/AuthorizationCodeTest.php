@@ -10,12 +10,15 @@ class AuthorizationCodeTest extends TestBase
     public function testMissingParentConfigException()
     {
         $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "client_id"');
-        new AuthorizationCode($this->getClient());
+        new AuthorizationCode($this->createClient());
     }
 
     public function testMissingConfigException()
     {
         $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "code"');
-        new AuthorizationCode($this->getClient(), ['client_id' => 'testClient']);
+        new AuthorizationCode($this->createClient(), [
+            'client_id' => 'testClient',
+            'client_secret' => 'clientSecret'
+        ]);
     }
 }

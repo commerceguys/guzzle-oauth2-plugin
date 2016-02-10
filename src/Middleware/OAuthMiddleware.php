@@ -7,22 +7,18 @@ use CommerceGuys\Guzzle\Oauth2\GrantType\GrantTypeBase;
 use CommerceGuys\Guzzle\Oauth2\GrantType\GrantTypeInterface;
 use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshTokenGrantTypeInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\Container;
 
-class OauthMiddleware
+class OAuthMiddleware
 {
     /**
      * @var AccessToken|null
      */
     protected $accessToken;
-
-    /**
-     * @var AccessToken|null
-     */
-    protected $refreshToken;
 
     /**
      * @var GrantTypeInterface
@@ -35,19 +31,19 @@ class OauthMiddleware
     protected $refreshTokenGrantType;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 
     /**
      * Create a new Oauth2 subscriber.
      *
-     * @param Client                         $client
+     * @param ClientInterface                $client
      * @param GrantTypeInterface             $grantType
      * @param RefreshTokenGrantTypeInterface $refreshTokenGrantType
      */
     public function __construct(
-        Client $client,
+        ClientInterface $client,
         GrantTypeInterface $grantType = null,
         RefreshTokenGrantTypeInterface $refreshTokenGrantType = null
     ) {
@@ -66,6 +62,7 @@ class OauthMiddleware
                 if (
                     isset($options['auth']) &&
                     'oauth2' == $options['auth'] &&
+                    $this->grantType instanceof GrantTypeInterface &&
                     $this->grantType->getConfigByName(GrantTypeBase::CONFIG_TOKEN_URL) != $request->getUri()->getPath()
                 ) {
                     $token = $this->getAccessToken();
@@ -89,17 +86,19 @@ class OauthMiddleware
                 $promise = $handler($request, $options);
                 return $promise->then(
                     function (ResponseInterface $response) use ($request, $options, &$calls, $limit) {
-                        ++$calls;
                         if (
-                            $calls < $limit &&
                             $response->getStatusCode() == 401 &&
                             isset($options['auth']) &&
                             'oauth2' == $options['auth'] &&
+                            $this->grantType instanceof GrantTypeInterface &&
                             $this->grantType->getConfigByName(GrantTypeBase::CONFIG_TOKEN_URL) != $request->getUri()->getPath()
                         ) {
-                            if ($token = $this->acquireAccessToken()) {
-                                $this->accessToken = $token;
-                                $this->refreshToken = $token->getRefreshToken();
+                            ++$calls;
+                            if ($calls > $limit) {
+                                return $response;
+                            }
+
+                            if ($token = $this->getAccessToken()) {
                                 $response = $this->client->send($request->withHeader('Authorization', 'Bearer ' . $token->getToken()), $options);
                             }
                         }
@@ -118,24 +117,20 @@ class OauthMiddleware
      */
     protected function acquireAccessToken()
     {
-        $accessToken = null;
-
         if ($this->refreshTokenGrantType) {
             // Get an access token using the stored refresh token.
-            if ($this->refreshToken) {
-                $this->refreshTokenGrantType->setRefreshToken($this->refreshToken->getToken());
-            }
-            if ($this->refreshTokenGrantType->hasRefreshToken()) {
-                $accessToken = $this->refreshTokenGrantType->getToken();
+            if ($this->accessToken instanceof AccessToken && $this->accessToken->getRefreshToken() instanceof AccessToken && $this->accessToken->isExpired()) {
+                $this->refreshTokenGrantType->setRefreshToken($this->accessToken->getRefreshToken()->getToken());
+                $this->accessToken = $this->refreshTokenGrantType->getToken();
             }
         }
 
-        if (!$accessToken && $this->grantType) {
+        if ((!$this->accessToken || $this->accessToken->isExpired()) && $this->grantType) {
             // Get a new access token.
-            $accessToken = $this->grantType->getToken();
+            $this->accessToken = $this->grantType->getToken();
         }
 
-        return $accessToken ?: null;
+        return $this->accessToken;
     }
 
     /**
@@ -145,18 +140,13 @@ class OauthMiddleware
      */
     public function getAccessToken()
     {
-        if ($this->accessToken && $this->accessToken->isExpired()) {
-            // The access token has expired.
-            $this->accessToken = null;
-        }
+        if (!($this->accessToken instanceof AccessToken) || $this->accessToken->isExpired()) {
+//            var_dump('Reset access Token');
+            $this->acquireAccessToken();
+        } //else {
 
-        if (null === $this->accessToken) {
-            // Try to acquire a new access token from the server.
-            $this->accessToken = $this->acquireAccessToken();
-            if ($this->accessToken) {
-                $this->refreshToken = $this->accessToken->getRefreshToken();
-            }
-        }
+//            var_dump('Get access Token');
+//        }
 
         return $this->accessToken;
     }
@@ -168,7 +158,11 @@ class OauthMiddleware
      */
     public function getRefreshToken()
     {
-        return $this->refreshToken;
+        if ($this->accessToken instanceof AccessToken) {
+            return $this->accessToken->getRefreshToken();
+        }
+
+        return null;
     }
 
     /**
@@ -183,12 +177,19 @@ class OauthMiddleware
     public function setAccessToken($accessToken, $type = null, $expires = null)
     {
         if (is_string($accessToken)) {
-            $accessToken = new AccessToken($accessToken, $type, ['expires' => $expires]);
-        } elseif (!$accessToken instanceof AccessToken) {
+            $this->accessToken = new AccessToken($accessToken, $type, ['expires' => $expires]);
+        } elseif ($accessToken instanceof AccessToken) {
+            $this->accessToken = $accessToken;
+        } else {
             throw new \InvalidArgumentException('Invalid access token');
         }
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $accessToken->getRefreshToken();
+
+        if (
+            $this->accessToken->getRefreshToken() instanceof AccessToken &&
+            $this->refreshTokenGrantType instanceof RefreshTokenGrantTypeInterface
+        ) {
+            $this->refreshTokenGrantType->setRefreshToken($this->accessToken->getRefreshToken()->getToken());
+        }
 
         return $this;
     }
@@ -202,13 +203,21 @@ class OauthMiddleware
      */
     public function setRefreshToken($refreshToken)
     {
+        if (!($this->accessToken instanceof AccessToken)) {
+            throw new \InvalidArgumentException('Unable to update the refresh token. You have never set first the access token.');
+        }
+
         if (is_string($refreshToken)) {
             $refreshToken = new AccessToken($refreshToken, 'refresh_token');
         } elseif (!$refreshToken instanceof AccessToken) {
             throw new \InvalidArgumentException('Invalid refresh token');
         }
 
-        $this->refreshToken = $refreshToken;
+        $this->accessToken->setRefreshToken($refreshToken);
+
+        if ($this->refreshTokenGrantType instanceof RefreshTokenGrantTypeInterface) {
+            $this->refreshTokenGrantType->setRefreshToken($refreshToken->getToken());
+        }
 
         return $this;
     }

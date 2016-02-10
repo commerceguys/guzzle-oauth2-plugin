@@ -4,7 +4,6 @@ namespace CommerceGuys\Guzzle\Oauth2\GrantType;
 
 use CommerceGuys\Guzzle\Oauth2\AccessToken;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 
@@ -110,7 +109,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getToken()
     {
@@ -127,7 +126,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
 
         $requestOptions[RequestOptions::FORM_PARAMS] = $body;
 
-        if ($additionalOptions  = $this->getAdditionalOptions()) {
+        if ($additionalOptions = $this->getAdditionalOptions()) {
             $requestOptions = array_merge_recursive($requestOptions, $additionalOptions);
         }
 

@@ -11,7 +11,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\DependencyInjection\Container;
 
 class OAuthMiddleware
 {
@@ -53,7 +52,7 @@ class OAuthMiddleware
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function onBefore()
     {
@@ -67,7 +66,7 @@ class OAuthMiddleware
                 ) {
                     $token = $this->getAccessToken();
                     if ($token !== null) {
-                        return $handler($request->withAddedHeader('Authorization', 'Bearer ' . $token->getToken()), $options);
+                        return $handler($request->withAddedHeader('Authorization', 'Bearer '.$token->getToken()), $options);
                     }
                 }
 
@@ -82,8 +81,9 @@ class OAuthMiddleware
 
         return function (callable $handler) use (&$calls, $limit) {
             return function (RequestInterface $request, array $options) use ($handler, &$calls, $limit) {
-                /** @var PromiseInterface */
+                /* @var PromiseInterface */
                 $promise = $handler($request, $options);
+
                 return $promise->then(
                     function (ResponseInterface $response) use ($request, $options, &$calls, $limit) {
                         if (
@@ -99,7 +99,7 @@ class OAuthMiddleware
                             }
 
                             if ($token = $this->getAccessToken()) {
-                                $response = $this->client->send($request->withHeader('Authorization', 'Bearer ' . $token->getToken()), $options);
+                                $response = $this->client->send($request->withHeader('Authorization', 'Bearer '.$token->getToken()), $options);
                             }
                         }
 
@@ -141,12 +141,8 @@ class OAuthMiddleware
     public function getAccessToken()
     {
         if (!($this->accessToken instanceof AccessToken) || $this->accessToken->isExpired()) {
-//            var_dump('Reset access Token');
             $this->acquireAccessToken();
-        } //else {
-
-//            var_dump('Get access Token');
-//        }
+        }
 
         return $this->accessToken;
     }

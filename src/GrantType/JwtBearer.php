@@ -10,7 +10,7 @@ use SplFileObject;
 use InvalidArgumentException;
 
 /**
- * JSON Web Token (JWT) Bearer Token Profiles for OAuth 2.0
+ * JSON Web Token (JWT) Bearer Token Profiles for OAuth 2.0.
  *
  * @link http://tools.ietf.org/html/draft-jones-oauth-jwt-bearer-04
  */
@@ -34,7 +34,7 @@ class JwtBearer extends GrantTypeBase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getRequired()
     {
@@ -42,19 +42,19 @@ class JwtBearer extends GrantTypeBase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getAdditionalOptions()
     {
         return [
             RequestOptions::FORM_PARAMS => [
-                'assertion' => $this->computeJwt()
-            ]
+                'assertion' => $this->computeJwt(),
+            ],
         ];
     }
 
     /**
-     * Compute JWT, signing with provided private key
+     * Compute JWT, signing with provided private key.
      *
      * @return string
      */
@@ -66,14 +66,14 @@ class JwtBearer extends GrantTypeBase
             'iss' => $this->config[self::CONFIG_CLIENT_ID],
             'aud' => sprintf('%s/%s', rtrim(($baseUri instanceof UriInterface ? $baseUri->__toString() : ''), '/'), ltrim($this->config[self::CONFIG_TOKEN_URL], '/')),
             'exp' => time() + 60 * 60,
-            'iat' => time()
+            'iat' => time(),
         ];
 
         return JWT::encode($payload, $this->readPrivateKey($this->config[self::CONFIG_PRIVATE_KEY]), 'RS256');
     }
 
     /**
-     * Read private key
+     * Read private key.
      *
      * @param SplFileObject $privateKey
      *

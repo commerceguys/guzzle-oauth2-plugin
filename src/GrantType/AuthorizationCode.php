@@ -1,7 +1,6 @@
 <?php
 
 namespace CommerceGuys\Guzzle\Oauth2\GrantType;
-use GuzzleHttp\ClientInterface;
 
 /**
  * Authorization code grant type.
@@ -13,7 +12,7 @@ class AuthorizationCode extends GrantTypeBase
     protected $grantType = 'authorization_code';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaults()
     {
@@ -21,7 +20,7 @@ class AuthorizationCode extends GrantTypeBase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getRequired()
     {

@@ -17,7 +17,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     protected $grantType = 'refresh_token';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaults()
     {
@@ -25,7 +25,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setRefreshToken($refreshToken)
     {
@@ -33,7 +33,7 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasRefreshToken()
     {
@@ -41,12 +41,12 @@ class RefreshToken extends GrantTypeBase implements RefreshTokenGrantTypeInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getToken()
     {
         if (!$this->hasRefreshToken()) {
-            throw new \RuntimeException("Refresh token not available");
+            throw new \RuntimeException('Refresh token not available');
         }
 
         return parent::getToken();

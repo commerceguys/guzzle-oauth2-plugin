@@ -1,3 +1,7 @@
+build_failure_conditions:
+    - 'issues.label("coding-style").new.exists'
+    - 'issues.severity(>= MAJOR).new.exists'
+
 tools:
     external_code_coverage: false
     php_code_sniffer:

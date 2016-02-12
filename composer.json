@@ -3,7 +3,7 @@
     "description": "An OAuth2 plugin (subscriber) for Guzzle",
     "license": "MIT",
     "require": {
-        "guzzlehttp/guzzle": "~5.0",
+        "guzzlehttp/guzzle": "~6.0",
         "firebase/php-jwt": "~3.0"
     },
     "autoload": {

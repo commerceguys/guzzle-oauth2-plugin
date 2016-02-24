@@ -20,7 +20,7 @@ class MockOAuth2Server
     protected $options;
 
     /**
-     * @var MockHandler
+     * @var HandlerStack
      */
     private $handlerStack;
 

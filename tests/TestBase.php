@@ -4,7 +4,6 @@ namespace CommerceGuys\Guzzle\Oauth2\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase

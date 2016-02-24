@@ -1,20 +1,12 @@
 guzzle-oauth2-plugin
 ====================
 
-Provides an OAuth2 plugin (subscriber) for [Guzzle](http://guzzlephp.org/).
+Provides an OAuth2 plugin (middleware) for [Guzzle](http://guzzlephp.org/).
 
 [![Build Status](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin)
 [![Code Coverage](https://scrutinizer-ci.com/g/commerceguys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/commerceguys/guzzle-oauth2-plugin/?branch=master)
 
-Version 2.x (on the `master` branch) is intended for Guzzle 5:
-```json
-        "commerceguys/guzzle-oauth2-plugin": "~2.0"
-```
-
-Guzzle 3 compatibility continues in the [`1.0`](https://github.com/commerceguys/guzzle-oauth2-plugin/tree/1.0) branch:
-```json
-        "commerceguys/guzzle-oauth2-plugin": "~1.0"
-```
+This version is intended for Guzzle 6:
 
 ## Features
 
@@ -32,36 +24,33 @@ First make sure you have all the dependencies in place by running `composer inst
 use GuzzleHttp\Client;
 use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshToken;
 use CommerceGuys\Guzzle\Oauth2\GrantType\PasswordCredentials;
-use CommerceGuys\Guzzle\Oauth2\Oauth2Subscriber;
+use CommerceGuys\Guzzle\Oauth2\OAuthMiddleware;
 
-$base_url = 'https://example.com';
+$base_uri = 'https://example.com';
 
-$oauth2Client = new Client(['base_url' => $base_url]);
+$handlerStack = HandlerStack::create();
+$client = new Client(['handler'=> $handlerStack, 'base_uri' => $base_uri, 'auth' => 'oauth2']);
 
 $config = [
-    'username' => 'test@example.com',
-    'password' => 'test password',
-    'client_id' => 'test-client',
+    PasswordCredentials::USERNAME => 'test@example.com',
+    PasswordCredentials::PASSWORD => 'test password',
+    PasswordCredentials::CLIENT_ID => 'test-client',
+    PasswordCredentials::CONFIG_TOKEN_URL => '/oauth/token',
     'scope' => 'administration',
 ];
 
-$token = new PasswordCredentials($oauth2Client, $config);
-$refreshToken = new RefreshToken($oauth2Client, $config);
+$token = new PasswordCredentials($client, $config);
+$refreshToken = new RefreshToken($client, $config);
+$middleware = new OAuthMiddleware($client, $token, $refreshToken);
 
-$oauth2 = new Oauth2Subscriber($token, $refreshToken);
+$handlerStack->push($middleware->onBefore());
+$handlerStack->push($middleware->onFailure(5));
 
-$client = new Client([
-    'defaults' => [
-        'auth' => 'oauth2',
-        'subscribers' => [$oauth2],
-    ],
-]);
-
-$response = $client->get('https://example.com/api/user/me');
+$response = $client->get('/api/user/me');
 
 print_r($response->json());
 
-// Use $oauth2->getAccessToken(); and $oauth2->getRefreshToken() to get tokens
+// Use $middleware->getAccessToken(); and $middleware->getRefreshToken() to get tokens
 // that can be persisted for subsequent requests.
 
 ```

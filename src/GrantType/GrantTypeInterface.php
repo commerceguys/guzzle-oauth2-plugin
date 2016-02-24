@@ -12,4 +12,16 @@ interface GrantTypeInterface
      * @return AccessToken
      */
     public function getToken();
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function getConfigByName($name);
+
+    /**
+     * @return array
+     */
+    public function getConfig();
 }

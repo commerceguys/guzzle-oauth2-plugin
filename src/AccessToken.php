@@ -2,6 +2,8 @@
 
 namespace CommerceGuys\Guzzle\Oauth2;
 
+use InvalidArgumentException;
+
 class AccessToken
 {
     /** @var string */
@@ -21,8 +23,8 @@ class AccessToken
 
     /**
      * @param string $token
-     * @param string $type The token type (from OAuth2 key 'token_type').
-     * @param array  $data Other token data.
+     * @param string $type  The token type (from OAuth2 key 'token_type').
+     * @param array  $data  Other token data.
      */
     public function __construct($token, $type, array $data = [])
     {
@@ -41,46 +43,75 @@ class AccessToken
         }
     }
 
-    /** @return bool */
+    /**
+     * @return bool
+     */
     public function isExpired()
     {
         return $this->expires !== null && $this->expires->getTimestamp() < time();
     }
 
-    /** @return \DateTime|null */
+    /**
+     * @return \DateTime|null
+     */
     public function getExpires()
     {
         return $this->expires;
     }
 
-    /** @return array */
+    /**
+     * @return array
+     */
     public function getData()
     {
         return $this->data;
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function getScope()
     {
         return isset($this->data['scope']) ? $this->data['scope'] : '';
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
 
-    /** @return AccessToken|null */
+    /**
+     * @return AccessToken|null
+     */
     public function getRefreshToken()
     {
         return $this->refreshToken;
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @param AccessToken $refreshToken
+     *
+     * @return self
+     */
+    public function setRefreshToken(AccessToken $refreshToken)
+    {
+        if ($refreshToken->getType() != 'refresh_token') {
+            throw new InvalidArgumentException('Expected AccessToken to be "refresh_token" type, got "%s"', $refreshToken->getType());
+        }
+
+        $this->refreshToken = $refreshToken;
+
+        return $this;
+    }
 }

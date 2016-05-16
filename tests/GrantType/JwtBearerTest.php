@@ -1,9 +1,9 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\Tests\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\Tests\GrantType;
 
-use CommerceGuys\Guzzle\Oauth2\GrantType\JwtBearer;
-use CommerceGuys\Guzzle\Oauth2\Tests\TestBase;
+use Sainsburys\Guzzle\Oauth2\GrantType\JwtBearer;
+use Sainsburys\Guzzle\Oauth2\Tests\TestBase;
 use SplFileObject;
 
 class JwtBearerTest extends TestBase

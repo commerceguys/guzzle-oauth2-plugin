@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\Tests;
+namespace Sainsburys\Guzzle\Oauth2\Tests;
 
 
 use GuzzleHttp\Exception\RequestException;

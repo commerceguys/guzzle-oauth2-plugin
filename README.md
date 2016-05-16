@@ -3,22 +3,22 @@ guzzle-oauth2-plugin
 
 Provides an OAuth2 plugin (middleware) for [Guzzle](http://guzzlephp.org/).
 
-[![Build Status](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/commerceguys/guzzle-oauth2-plugin)
-[![Code Coverage](https://scrutinizer-ci.com/g/commerceguys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/commerceguys/guzzle-oauth2-plugin/?branch=master)
+[![Build Status](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin)
+[![Code Coverage](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/?branch=master)
 
 Version 3.x (on the `develop` branch) is intended for Guzzle 6:
 ```json
-        "commerceguys/guzzle-oauth2-plugin": "~3.0"
+        "sainsburys/guzzle-oauth2-plugin": "~3.0"
 ```
 
 Version 2.x (on the `master` branch) is intended for Guzzle 5:
 ```json
-        "commerceguys/guzzle-oauth2-plugin": "~2.0"
+        "sainsburys/guzzle-oauth2-plugin": "~2.0"
 ```
 
-Guzzle 3 compatibility continues in the [`1.0`](https://github.com/commerceguys/guzzle-oauth2-plugin/tree/1.0) branch:
+Version 1.x is intended for Guzzle 3 [Unmaintained]:
 ```json
-        "commerceguys/guzzle-oauth2-plugin": "~1.0"
+        "sainsburys/guzzle-oauth2-plugin": "~1.0"
 ```
 
 ## Features

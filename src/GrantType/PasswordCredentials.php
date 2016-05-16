@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\GrantType;
 
 /**
  * Resource owner password credentials grant type.

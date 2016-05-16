@@ -1,14 +1,14 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\Tests\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\Tests\GrantType;
 
-use CommerceGuys\Guzzle\Oauth2\AccessToken;
-use CommerceGuys\Guzzle\Oauth2\GrantType\ClientCredentials;
-use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshToken;
-use CommerceGuys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
-use CommerceGuys\Guzzle\Oauth2\Tests\MockOAuth2Server;
-use CommerceGuys\Guzzle\Oauth2\Tests\MockOAuthMiddleware;
-use CommerceGuys\Guzzle\Oauth2\Tests\TestBase;
+use Sainsburys\Guzzle\Oauth2\AccessToken;
+use Sainsburys\Guzzle\Oauth2\GrantType\ClientCredentials;
+use Sainsburys\Guzzle\Oauth2\GrantType\RefreshToken;
+use Sainsburys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
+use Sainsburys\Guzzle\Oauth2\Tests\MockOAuth2Server;
+use Sainsburys\Guzzle\Oauth2\Tests\MockOAuthMiddleware;
+use Sainsburys\Guzzle\Oauth2\Tests\TestBase;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;

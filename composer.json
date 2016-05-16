@@ -1,5 +1,5 @@
 {
-    "name": "commerceguys/guzzle-oauth2-plugin",
+    "name": "sainsburys/guzzle-oauth2-plugin",
     "description": "An OAuth2 plugin (subscriber) for Guzzle",
     "license": "MIT",
     "require": {
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CommerceGuys\\Guzzle\\Oauth2\\": "src"
+            "Sainsburys\\Guzzle\\Oauth2\\": "src"
         }
     },
     "require-dev": {
@@ -16,7 +16,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "CommerceGuys\\Guzzle\\Oauth2\\Tests\\": "tests"
+            "Sainsburys\\Guzzle\\Oauth2\\Tests\\": "tests"
         }
     },
     "authors": [

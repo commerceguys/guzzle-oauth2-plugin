@@ -1,13 +1,13 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\GrantType;
 
-use GuzzleHttp\ClientInterface;
 use Firebase\JWT\JWT;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use SplFileObject;
-use InvalidArgumentException;
 
 /**
  * JSON Web Token (JWT) Bearer Token Profiles for OAuth 2.0.

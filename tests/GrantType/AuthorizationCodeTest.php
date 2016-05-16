@@ -1,9 +1,9 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\Tests\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\Tests\GrantType;
 
-use CommerceGuys\Guzzle\Oauth2\GrantType\AuthorizationCode;
-use CommerceGuys\Guzzle\Oauth2\Tests\TestBase;
+use Sainsburys\Guzzle\Oauth2\GrantType\AuthorizationCode;
+use Sainsburys\Guzzle\Oauth2\Tests\TestBase;
 
 class AuthorizationCodeTest extends TestBase
 {

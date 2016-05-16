@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2;
+namespace Sainsburys\Guzzle\Oauth2;
 
 use InvalidArgumentException;
 

@@ -1,2 +1,23 @@
+    - 'issues.label("coding-style").new.exists'
+    - 'issues.severity(>= MAJOR).new.exists'
+
 tools:
-    external_code_coverage: true
+    external_code_coverage: false
+    php_code_sniffer:
+        config: { standard: 'PSR2' }
+
+build:
+    environment:
+        php:
+            version: 5.6.16
+            ini:
+                display_errors: true
+                date.timezone: Europe/London
+                memory_limit: 2G
+    tests:
+        override:
+            -
+                command: 'bin/phpunit --coverage-clover=coverage.clover'
+                coverage:
+                    file: 'coverage.clover'
+                    format: 'php-clover'

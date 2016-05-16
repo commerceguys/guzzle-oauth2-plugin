@@ -1,8 +1,8 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\GrantType;
 
-use CommerceGuys\Guzzle\Oauth2\AccessToken;
+use Sainsburys\Guzzle\Oauth2\AccessToken;
 
 interface GrantTypeInterface
 {
@@ -12,4 +12,16 @@ interface GrantTypeInterface
      * @return AccessToken
      */
     public function getToken();
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function getConfigByName($name);
+
+    /**
+     * @return array
+     */
+    public function getConfig();
 }

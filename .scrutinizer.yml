@@ -1,3 +1,4 @@
+build_failure_conditions:
     - 'issues.label("coding-style").new.exists'
     - 'issues.severity(>= MAJOR).new.exists'
 

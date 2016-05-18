@@ -1,22 +1,24 @@
-guzzle-oauth2-plugin
-====================
+![logo](http://www.sainsburys.co.uk/homepage/images/sainsburys.png)
+
+Sainsbury's guzzle-oauth2-plugin
+================================
 
 Provides an OAuth2 plugin (middleware) for [Guzzle](http://guzzlephp.org/).
 
-[![Build Status](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin)
-[![Code Coverage](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/?branch=master)
+[![Build Status](https://travis-ci.org/Sainsburys/guzzle-oauth2-plugin.svg?branch=master)](https://travis-ci.org/Sainsburys/guzzle-oauth2-plugin)
+[![Code Coverage](https://scrutinizer-ci.com/g/Sainsburys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Sainsburys/guzzle-oauth2-plugin/?branch=master)
 
-Version 3.x (on the `develop` branch) is intended for Guzzle 6:
+Version 3.x (on the `master` branch) is intended for Guzzle 6:
 ```json
         "sainsburys/guzzle-oauth2-plugin": "~3.0"
 ```
 
-Version 2.x (on the `master` branch) is intended for Guzzle 5:
+Version 2.x (on the `release/2.0` branch) is intended for Guzzle 5:
 ```json
         "sainsburys/guzzle-oauth2-plugin": "~2.0"
 ```
 
-Version 1.x is intended for Guzzle 3 [Unmaintained]:
+Version 1.x (on the `release/1.0` branch) is intended for Guzzle 5 [Unmaintained]:
 ```json
         "sainsburys/guzzle-oauth2-plugin": "~1.0"
 ```
@@ -35,9 +37,9 @@ First make sure you have all the dependencies in place by running `composer inst
 ## Example
 ```php
 use GuzzleHttp\HandlerStack;
-use CommerceGuys\Guzzle\Oauth2\GrantType\RefreshToken;
-use CommerceGuys\Guzzle\Oauth2\GrantType\PasswordCredentials;
-use CommerceGuys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
+use Sainsburys\Guzzle\Oauth2\GrantType\RefreshToken;
+use Sainsburys\Guzzle\Oauth2\GrantType\PasswordCredentials;
+use Sainsburys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
 
 $base_uri = 'https://example.com';
 

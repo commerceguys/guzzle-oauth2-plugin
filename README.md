@@ -1,10 +1,12 @@
-guzzle-oauth2-plugin
-====================
+![logo](http://www.sainsburys.co.uk/homepage/images/sainsburys.png)
+
+Sainsbury's guzzle-oauth2-plugin
+================================
 
 Provides an OAuth2 plugin (middleware) for [Guzzle](http://guzzlephp.org/).
 
-[![Build Status](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin.svg)](https://travis-ci.org/sainsburys/guzzle-oauth2-plugin)
-[![Code Coverage](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sainsburys/guzzle-oauth2-plugin/?branch=master)
+[![Build Status](https://travis-ci.org/Sainsburys/guzzle-oauth2-plugin.svg?branch=master)](https://travis-ci.org/Sainsburys/guzzle-oauth2-plugin)
+[![Code Coverage](https://scrutinizer-ci.com/g/Sainsburys/guzzle-oauth2-plugin/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Sainsburys/guzzle-oauth2-plugin/?branch=master)
 
 Version 3.x (on the `develop` branch) is intended for Guzzle 6:
 ```json

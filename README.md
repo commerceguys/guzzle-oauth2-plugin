@@ -18,7 +18,7 @@ Version 2.x (on the `release/2.0` branch) is intended for Guzzle 5:
         "sainsburys/guzzle-oauth2-plugin": "~2.0"
 ```
 
-Version 1.x (on the `release/1.0` branch) is intended for Guzzle 5 [Unmaintained]:
+Version 1.x (on the `release/1.0` branch) is intended for Guzzle 3 [Unmaintained]:
 ```json
         "sainsburys/guzzle-oauth2-plugin": "~1.0"
 ```

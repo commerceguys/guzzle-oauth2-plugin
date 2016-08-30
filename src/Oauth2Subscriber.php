@@ -110,16 +110,18 @@ class Oauth2Subscriber implements SubscriberInterface
     /**
      * Get the access token.
      *
+     * @param bool $refresh Whether to refresh the token, if possible.
+     *
      * @return AccessToken|null Oauth2 access token
      */
-    public function getAccessToken()
+    public function getAccessToken($refresh = true)
     {
         if ($this->accessToken && $this->accessToken->isExpired()) {
             // The access token has expired.
             $this->accessToken = null;
         }
 
-        if (null === $this->accessToken) {
+        if (null === $this->accessToken && $refresh) {
             // Try to acquire a new access token from the server.
             $this->accessToken = $this->acquireAccessToken();
             if ($this->accessToken) {

@@ -11,12 +11,15 @@ class AuthorizationCode extends GrantTypeBase
 {
     protected $grantType = 'authorization_code';
 
+    const CONFIG_REDIRECT_URI = 'redirect_uri';
+    const CONFIG_CODE = 'code';
+
     /**
      * {@inheritdoc}
      */
     protected function getDefaults()
     {
-        return array_merge(parent::getDefaults(), ['redirect_uri' => '']);
+        return array_merge(parent::getDefaults(), [self::CONFIG_REDIRECT_URI => '']);
     }
 
     /**
@@ -24,6 +27,6 @@ class AuthorizationCode extends GrantTypeBase
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), ['code' => '']);
+        return array_merge(parent::getRequired(), [self::CONFIG_CODE => '']);
     }
 }

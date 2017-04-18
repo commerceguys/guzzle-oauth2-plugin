@@ -1,6 +1,6 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\GrantType;
 
 /**
  * Authorization code grant type.
@@ -12,18 +12,18 @@ class AuthorizationCode extends GrantTypeBase
     protected $grantType = 'authorization_code';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaults()
     {
-        return parent::getDefaults() + ['redirect_uri' => ''];
+        return array_merge(parent::getDefaults(), ['redirect_uri' => '']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getRequired()
     {
-        return array_merge(parent::getRequired(), ['code']);
+        return array_merge(parent::getRequired(), ['code' => '']);
     }
 }

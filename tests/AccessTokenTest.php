@@ -1,8 +1,8 @@
 <?php
 
-namespace CommerceGuys\Guzzle\Oauth2\Tests;
+namespace Sainsburys\Guzzle\Oauth2\Tests;
 
-use CommerceGuys\Guzzle\Oauth2\AccessToken;
+use Sainsburys\Guzzle\Oauth2\AccessToken;
 
 class AccessTokenTest extends \PHPUnit_Framework_TestCase
 {

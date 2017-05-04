@@ -18,7 +18,6 @@ class PasswordCredentialsTest extends TestBase
         $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "username"');
         new PasswordCredentials($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret',
         ]);
     }
 
@@ -27,7 +26,6 @@ class PasswordCredentialsTest extends TestBase
         $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "password"');
         new PasswordCredentials($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret',
             'username' => 'validUsername',
         ]);
     }
@@ -36,7 +34,6 @@ class PasswordCredentialsTest extends TestBase
     {
         $grantType = new PasswordCredentials($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret',
             'username' => 'validUsername',
             'password' => 'validPassword',
         ]);

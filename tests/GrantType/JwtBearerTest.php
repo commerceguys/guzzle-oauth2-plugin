@@ -19,7 +19,6 @@ class JwtBearerTest extends TestBase
         $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "private_key"');
         new JwtBearer($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret'
         ]);
     }
 
@@ -28,7 +27,6 @@ class JwtBearerTest extends TestBase
         $this->setExpectedException(\InvalidArgumentException::class, 'private_key needs to be instance of SplFileObject');
         new JwtBearer($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret',
             'private_key' => 'INVALID'
         ]);
     }
@@ -37,7 +35,6 @@ class JwtBearerTest extends TestBase
     {
         $grantType = new JwtBearer($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret',
             'private_key' => new SplFileObject(__DIR__ . '/../private.key')
         ]);
         $token = $grantType->getToken();

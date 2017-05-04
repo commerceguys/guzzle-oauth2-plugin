@@ -11,7 +11,6 @@ class RefreshTokenTest extends TestBase
     {
         $grant = new RefreshToken($this->createClient(), [
             'client_id' => 'test',
-            'client_secret' => 'clientSecret',
         ]);
         $this->setExpectedException(\RuntimeException::class);
         $grant->getToken();

@@ -18,7 +18,6 @@ class AuthorizationCodeTest extends TestBase
         $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "code"');
         new AuthorizationCode($this->createClient(), [
             'client_id' => 'testClient',
-            'client_secret' => 'clientSecret'
         ]);
     }
 }

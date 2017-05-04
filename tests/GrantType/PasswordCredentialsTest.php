@@ -9,13 +9,13 @@ class PasswordCredentialsTest extends TestBase
 {
     public function testMissingParentConfigException()
     {
-        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "client_id"');
+        $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "client_id"');
         new PasswordCredentials($this->createClient());
     }
 
     public function testMissingUsernameConfigException()
     {
-        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "username"');
+        $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "username"');
         new PasswordCredentials($this->createClient(), [
             'client_id' => 'testClient',
             'client_secret' => 'clientSecret',
@@ -24,7 +24,7 @@ class PasswordCredentialsTest extends TestBase
 
     public function testMissingPasswordConfigException()
     {
-        $this->setExpectedException('\\InvalidArgumentException', 'The config is missing the following key: "password"');
+        $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "password"');
         new PasswordCredentials($this->createClient(), [
             'client_id' => 'testClient',
             'client_secret' => 'clientSecret',

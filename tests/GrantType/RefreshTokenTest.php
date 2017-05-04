@@ -13,7 +13,7 @@ class RefreshTokenTest extends TestBase
             'client_id' => 'test',
             'client_secret' => 'clientSecret',
         ]);
-        $this->setExpectedException('\\RuntimeException');
+        $this->setExpectedException(\RuntimeException::class);
         $grant->getToken();
     }
 }

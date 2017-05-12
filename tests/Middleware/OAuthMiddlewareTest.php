@@ -1,6 +1,6 @@
 <?php
 
-namespace Sainsburys\Guzzle\Oauth2\Tests\GrantType;
+namespace Sainsburys\Guzzle\Oauth2\Tests\Middleware;
 
 use Sainsburys\Guzzle\Oauth2\AccessToken;
 use Sainsburys\Guzzle\Oauth2\GrantType\ClientCredentials;
@@ -9,7 +9,6 @@ use Sainsburys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
 use Sainsburys\Guzzle\Oauth2\Tests\MockOAuth2Server;
 use Sainsburys\Guzzle\Oauth2\Tests\MockOAuthMiddleware;
 use Sainsburys\Guzzle\Oauth2\Tests\TestBase;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 

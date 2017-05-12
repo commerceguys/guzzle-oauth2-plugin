@@ -72,7 +72,6 @@ abstract class GrantTypeBase implements GrantTypeInterface
     {
         return [
             self::CONFIG_CLIENT_ID => '',
-            self::CONFIG_CLIENT_SECRET => '',
         ];
     }
 
@@ -120,7 +119,10 @@ abstract class GrantTypeBase implements GrantTypeInterface
         $requestOptions = [];
 
         if ($this->config[self::CONFIG_AUTH_LOCATION] !== RequestOptions::BODY) {
-            $requestOptions[RequestOptions::AUTH] = [$this->config[self::CONFIG_CLIENT_ID], $this->config[self::CONFIG_CLIENT_SECRET]];
+            $requestOptions[RequestOptions::AUTH] = [
+                $this->config[self::CONFIG_CLIENT_ID],
+                isset($this->config[self::CONFIG_CLIENT_SECRET]) ? $this->config[self::CONFIG_CLIENT_SECRET] : '',
+            ];
             unset($body[self::CONFIG_CLIENT_ID], $body[self::CONFIG_CLIENT_SECRET]);
         }
 

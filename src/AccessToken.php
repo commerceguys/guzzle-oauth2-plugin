@@ -107,7 +107,7 @@ class AccessToken
     public function setRefreshToken(AccessToken $refreshToken)
     {
         if ($refreshToken->getType() != 'refresh_token') {
-            throw new InvalidArgumentException('Expected AccessToken to be "refresh_token" type, got "%s"', $refreshToken->getType());
+            throw new InvalidArgumentException(sprintf('Expected AccessToken to be "refresh_token" type, got "%s"', $refreshToken->getType()));
         }
 
         $this->refreshToken = $refreshToken;

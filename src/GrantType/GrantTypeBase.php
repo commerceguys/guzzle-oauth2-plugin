@@ -13,6 +13,7 @@ abstract class GrantTypeBase implements GrantTypeInterface
     const CONFIG_CLIENT_ID = 'client_id';
     const CONFIG_CLIENT_SECRET = 'client_secret';
     const CONFIG_AUTH_LOCATION = 'auth_location';
+    const CONFIG_RESOURCE = 'resource';
 
     const GRANT_TYPE = 'grant_type';
 

@@ -8,28 +8,24 @@ use GuzzleHttp\HandlerStack;
 
 abstract class TestBase extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var ClientInterface
-     */
+    /** @var ClientInterface */
     protected $client;
 
-    /**
-     * @var MockOAuth2Server
-     */
+    /** @var MockOAuth2Server */
     protected $server;
 
     /**
      * @param array $options
      * @param array $serverOptions
      *
-     * @return ClientInterface
+     * @return Client
      */
     protected function createClient(array $options = [], array $serverOptions = [])
     {
         $this->server = new MockOAuth2Server($serverOptions);
-        $this->client = new Client([
-                'handler' => $this->server->getHandlerStack()
-            ] + $options);
+        $this->client = new Client(
+            ['handler' => $this->server->getHandlerStack()] + $options
+        );
 
         return $this->client;
     }

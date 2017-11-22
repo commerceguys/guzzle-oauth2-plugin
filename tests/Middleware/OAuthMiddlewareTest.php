@@ -226,18 +226,20 @@ class OAuthMiddlewareTest extends TestBase
 
     public function testSettingManualAccessTokenWithInvalidValue()
     {
-        $client = $this->createClient([], []);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid access token');
 
-        $this->setExpectedException('\\InvalidArgumentException', 'Invalid access token');
+        $client = $this->createClient([], []);
         $middleware = new OAuthMiddleware($client);
         $middleware->setAccessToken([]);
     }
 
     public function testSettingManualRefreshTokenWhenNoAccessToken()
     {
-        $client = $this->createClient([], []);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to update the refresh token. You have never set first the access token.');
 
-        $this->setExpectedException('\\InvalidArgumentException', 'Unable to update the refresh token. You have never set first the access token.');
+        $client = $this->createClient([], []);
         $middleware = new OAuthMiddleware($client);
         $middleware->setRefreshToken('refreshToken');
     }

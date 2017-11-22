@@ -5,11 +5,15 @@ sudo: false
 php:
   - 5.6
   - 7.0
+  - 7.1
   - hhvm
 
 cache:
   directories:
     - $HOME/.composer/cache
+
+before_install:
+  - rm composer.lock
 
 install:
   - composer install --prefer-dist --no-interaction
@@ -18,7 +22,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - ./bin/phpunit --verbose --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar -t 3

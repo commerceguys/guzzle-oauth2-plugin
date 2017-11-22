@@ -32,7 +32,7 @@ Version 1.x (on the `release/1.0` branch) is intended for Guzzle 3 [Unmaintained
 
 ## Running the tests
 
-First make sure you have all the dependencies in place by running `composer install --prefer-dist`, then simply run `./bin/phpunit`.
+First make sure you have all the dependencies in place by running `composer install --prefer-dist`, then simply run `.vendor/bin/phpunit`.
 
 ## Example
 ```php

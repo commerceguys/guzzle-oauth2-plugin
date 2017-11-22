@@ -46,6 +46,9 @@ class MockOAuthMiddleware extends OAuthMiddleware
         $this->tokenExpiredOnFailureCount = 0;
     }
 
+    /**
+     * @return \Closure
+     */
     public function modifyBeforeOnFailure()
     {
         $calls = 0;

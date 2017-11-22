@@ -9,10 +9,19 @@ class RefreshTokenTest extends TestBase
 {
     public function testGetTokenChecksForRefreshToken()
     {
+        $this->expectException(\RuntimeException::class);
+
         $grant = new RefreshToken($this->createClient(), [
             'client_id' => 'test',
         ]);
-        $this->setExpectedException(\RuntimeException::class);
         $grant->getToken();
+    }
+
+    public function testMissingParentConfigException()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The config is missing the following key: "client_id"');
+
+        new RefreshToken($this->createClient());
     }
 }

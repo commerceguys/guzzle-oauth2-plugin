@@ -3,7 +3,6 @@
 namespace Sainsburys\Guzzle\Oauth2\Tests;
 
 
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
@@ -19,14 +18,10 @@ class MockOAuth2Server
     /** @var array */
     protected $options;
 
-    /**
-     * @var HandlerStack
-     */
+    /** @var HandlerStack */
     private $handlerStack;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $tokenInvalidCount = 0;
 
     /**
@@ -69,29 +64,30 @@ class MockOAuth2Server
      * @param RequestInterface $request
      * @param array            $options
      *
-     * @return array
+     * @throws \RuntimeException
+     *
+     * @return Response
      */
     protected function getResult(RequestInterface $request, array $options)
     {
         if ($request->getUri()->getPath() === $this->options[self::KEY_TOKEN_PATH]) {
-            $response = $this->oauth2Token($request, $options);
+            return $this->oauth2Token($request, $options);
         } elseif (strpos($request->getUri()->getPath(), '/api/') !== false) {
-            $response = $this->mockApiCall($request);
-        }
-        if (!isset($response)) {
-            throw new \RuntimeException("Mock server cannot handle given request URI");
+            return $this->mockApiCall($request);
         }
 
-        return $response;
+        throw new \RuntimeException('Mock server cannot handle given request URI');
     }
 
     /**
      * @param RequestInterface $request
      * @param array            $options
      *
-     * @return array
+     * @throws \RuntimeException
+     *
+     * @return Response
      */
-    protected function oauth2Token(RequestInterface $request, $options)
+    protected function oauth2Token(RequestInterface $request, array $options)
     {
         $body = $request->getBody()->__toString();
         $requestBody = [];
@@ -110,11 +106,12 @@ class MockOAuth2Server
             case 'urn:ietf:params:oauth:grant-type:jwt-bearer':
                 return $this->grantTypeJwtBearer($requestBody);
         }
+
         throw new \RuntimeException("Test grant type not implemented: $grantType");
     }
 
     /**
-     * @return array
+     * @return Response
      */
     protected function validTokenResponse()
     {
@@ -134,10 +131,11 @@ class MockOAuth2Server
     }
 
     /**
+     * The response as expected by the MockHandler.
+     *
      * @param array  $requestBody
      *
-     * @return array
-     *   The response as expected by the MockHandler.
+     * @return Response
      */
     protected function grantTypePassword(array $requestBody)
     {
@@ -150,10 +148,11 @@ class MockOAuth2Server
     }
 
     /**
+     * The response as expected by the MockHandler.
+     *
      * @param array  $options
      *
-     * @return array
-     *   The response as expected by the MockHandler.
+     * @return Response
      */
     protected function grantTypeClientCredentials(array $options)
     {
@@ -168,7 +167,7 @@ class MockOAuth2Server
     /**
      * @param array  $requestBody
      *
-     * @return array
+     * @return Response
      */
     protected function grantTypeRefreshToken(array $requestBody)
     {
@@ -182,7 +181,7 @@ class MockOAuth2Server
     /**
      * @param array  $requestBody
      *
-     * @return array
+     * @return Response
      */
     protected function grantTypeJwtBearer(array $requestBody)
     {
@@ -196,7 +195,7 @@ class MockOAuth2Server
     /**
      * @param RequestInterface $request
      *
-     * @return array
+     * @return Response
      */
     protected function mockApiCall(RequestInterface $request)
     {

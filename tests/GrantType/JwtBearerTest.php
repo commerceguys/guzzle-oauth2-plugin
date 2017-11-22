@@ -10,13 +10,17 @@ class JwtBearerTest extends TestBase
 {
     public function testMissingParentConfigException()
     {
-        $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "client_id"');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The config is missing the following key: "client_id"');
+
         new JwtBearer($this->createClient());
     }
 
     public function testMissingConfigException()
     {
-        $this->setExpectedException(\InvalidArgumentException::class, 'The config is missing the following key: "private_key"');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The config is missing the following key: "private_key"');
+
         new JwtBearer($this->createClient(), [
             'client_id' => 'testClient',
         ]);
@@ -24,7 +28,9 @@ class JwtBearerTest extends TestBase
 
     public function testPrivateKeyNotSplFileObject()
     {
-        $this->setExpectedException(\InvalidArgumentException::class, 'private_key needs to be instance of SplFileObject');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('private_key needs to be instance of SplFileObject');
+
         new JwtBearer($this->createClient(), [
             'client_id' => 'testClient',
             'private_key' => 'INVALID'
